@@ -35,3 +35,7 @@ Route::prefix('admin')->group(function () {
 
 Route::get('/projects/{name}', [PageController::class, 'showProjects']);
 Route::get('/projects/json', [ProjectController::class, 'index']);
+Route::get('/projects/html', [ProjectController::class, 'html']);
+Route::get('/', [PageController::class, 'home']);
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');

@@ -10,11 +10,17 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with(['users','milestones','publications','tags','attachments','comments','tasks'])
-            ->orderBy('title')
-            ->get();
+        $projects = Project::with(['milestones','tags','publications'])->orderBy('title')->get();
+        return view('projects.index', ['projects' => $projects]);
+    }
 
-        return response()->json($projects, 200);
+    public function html()
+    {
+        $projects = \App\Models\Project::orderBy('title')->get(['title','status']);
+        $out = '<h2>Progetti</h2><ul>';
+        foreach($projects as $p){ $out .= '<li><strong>'.$p->title.'</strong> ('.($p->status ?? 'n/d').')</li>'; }
+        $out .= '</ul>';
+        return $out;
     }
 
     public function create()
@@ -33,9 +39,10 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Project $project)
     {
-        //
+        $project->load(['milestones','publications.authors.user','tags','attachments','comments.user']);
+        return view('projects.show', ['project' => $project]);
     }
 
     /**
