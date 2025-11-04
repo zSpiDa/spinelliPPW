@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,4 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::get('/projects/{name}', [PageController::class, 'showProjects']);
+Route::get('/projects/json', [ProjectController::class, 'index']);

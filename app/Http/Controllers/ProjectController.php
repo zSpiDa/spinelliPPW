@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use app\Models\Project;
+
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $projects = Project::with(['users','milestones','publications','tags','attachments','comments','tasks'])
+            ->orderBy('title')
+            ->get();
+
+        return response()->json($projects, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
