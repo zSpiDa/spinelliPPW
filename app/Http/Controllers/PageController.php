@@ -20,7 +20,7 @@ class PageController extends Controller
 
     public function projects()
     {
-        $projects = ['Morfeo', 'Geologia', 'Astroworld'];
+        $projects = ['Morfpheus', 'Geologia', 'Astroworld'];
         $html = '<h1>Progetti di Ricerca</h1><ul>';
         foreach ($projects as $p) {
             $html .= '<li>' . $p . '</li>';
