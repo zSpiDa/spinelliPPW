@@ -14,9 +14,7 @@ use App\Http\Controllers\ProjectController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', [PageController::class, 'home']);;
-
-Route::get('/projects', [PageController::class, 'projects']);;
+Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/welcome', function(){
     return view('welcome');
@@ -33,9 +31,8 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::get('/projects/{name}', [PageController::class, 'showProjects']);
-Route::get('/projects/json', [ProjectController::class, 'index']);
+// Projects routes
 Route::get('/projects/html', [ProjectController::class, 'html']);
-Route::get('/', [PageController::class, 'home']);
+Route::get('/projects/json', [ProjectController::class, 'apiIndex']);
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
