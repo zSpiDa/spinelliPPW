@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\Models\Project;
+use App\Models\Project;
 
 
 class ProjectController extends Controller
 {
-    public function index()
+   public function index()
     {
-        $projects = Project::with(['milestones','tags','publications'])->orderBy('title')->get();
+        $projects = Project::with(['users','milestones','publications','tags','attachments','comments','tasks'])
+            ->orderBy('title')
+            ->get();
+
         return view('projects.index', ['projects' => $projects]);
     }
 
@@ -21,6 +24,18 @@ class ProjectController extends Controller
         foreach($projects as $p){ $out .= '<li><strong>'.$p->title.'</strong> ('.($p->status ?? 'n/d').')</li>'; }
         $out .= '</ul>';
         return $out;
+    }
+
+    /**
+     * API: return projects as JSON (with relations)
+     */
+    public function apiIndex()
+    {
+        $projects = Project::with(['users','milestones','publications','tags','attachments','comments','tasks'])
+            ->orderBy('title')
+            ->get();
+
+        return response()->json($projects, 200);
     }
 
     public function create()
