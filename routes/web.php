@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProjectController;
-
+use App\Http\Controllers\{ProjectController,PublicationController,TaskController};
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,25 +13,26 @@ use App\Http\Controllers\ProjectController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', [PageController::class, 'home'])->name('home');
 
-Route::get('/welcome', function(){
+Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/about', [PageController::class, 'about'])->name('about.page');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::prefix('admin')->group(function () {
-    Route::get('/projects', function () {
-        return '<h1>Gestione progetti (Area admin)</h1><p>Elenco e gestione progetti di ricerca.</p>';
-    });
-    Route::get('/users', function () {
-        return '<h1>Gestione utenti (Area admin)</h1><p>Elenco e gestione utenti del sistema.</p>';
-    });
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Projects routes
-Route::get('/projects/html', [ProjectController::class, 'html']);
-Route::get('/projects/json', [ProjectController::class, 'apiIndex']);
-Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('projects', ProjectController::class);
+    Route::resource('publications', PublicationController::class);
+    Route::resource('tasks', TaskController::class);
+});
+
+
+require __DIR__.'/auth.php';
