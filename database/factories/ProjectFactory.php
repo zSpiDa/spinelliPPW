@@ -3,12 +3,17 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Project;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
+ */
 class ProjectFactory extends Factory
 {
-    protected $model = Project::class;
-
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
@@ -17,7 +22,7 @@ class ProjectFactory extends Factory
             'funder' => $this->faker->randomElement(['MUR','EU','MIUR','Regione Puglia']),
             'start_date' => $this->faker->date(),
             'end_date' => null,
-            // 'status' => 'ongoing', // usa solo se la tua migration lo consente
+            'status' => 'ongoing', // usa solo se la tua migration lo consente
             'description' => $this->faker->paragraph(),
         ];
     }

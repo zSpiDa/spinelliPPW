@@ -4,6 +4,8 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\{User, Project};
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,8 +23,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerPolicies();
-
-        //
+        Gate::define('delete-project', function (User $user, Project $project) {
+            return in_array($user->role, ['admin','pi'], true);
+        });
     }
 }

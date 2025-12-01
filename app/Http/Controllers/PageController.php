@@ -3,36 +3,38 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Project;
 
 class PageController extends Controller
 {
-    public function home()
-    {
-        return '<h1>Benvenuto nel Gestionale del Gruppo di Ricerca</h1>
-        <p>Questa pagina è gestita da un controller Laravel</p>';
+    public function home(){
+        $projectCount = Project::count();
+        return view('home', ['projectCount' => $projectCount]);
     }
 
     public function about()
     {
-        return '<h1>Chi siamo?</h1>
-        <p>Questo gestionale supporta la gestione di progetti e pubblicazioni del gruppo IVU Lab.</p>';
+        return '<h2>Chi siamo</h2>
+            <p>Questo gestionale supporta la gestione di progetti e pubblicazioni del gruppo IVU Lab.</p>';
     }
 
-    public function projects()
+    public function contact()
     {
-        $projects = ['Morfpheus', 'Geologia', 'Astroworld'];
-        $html = '<h1>Progetti di Ricerca</h1><ul>';
-        foreach ($projects as $p) {
-            $html .= '<li>' . $p . '</li>';
+        return '<h2>Contatti</h2>
+            <p>Email: <a href="mailto:info@uniba.it">info@uniba.it</a></p>';
+    }
+
+    public function projects(){
+        $projects = ['Mimmo', 'Sangiulio', 'Cabasele'];
+        $html = '<h1> Gruppettino carino: </h1><ul>';
+        foreach($projects  as $p){
+            $html .= '<li>'.$p.'</li>';
         }
         $html .= '</ul>';
         return $html;
     }
 
-
-    public function showProjects(string $name)
-    {
-        return '<h1>Progetto ' . $name . '</h1>';
+    public function showProject($name){
+        return '<h1> Il progetto di: ' . ucfirst($name) .'</h1>';
     }
-
 }

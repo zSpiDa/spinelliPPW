@@ -19,6 +19,15 @@
                     @endforeach
                 </div>
             @endif
+
+            @can('delete-project', $project)
+
+
+                @csrf @method('DELETE')
+                Elimina
+
+
+            @endcan
         </div>
     </div>
 

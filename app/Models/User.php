@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable; //generare Token, factory, permette invio notifiche
 
     /**
      * The attributes that are mass assignable.
@@ -21,15 +21,23 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role'
     ];
+
+    // Relazione necessaria per la dashboard e per accedere ai progetti dell'utente
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class)
+            ->withPivot(['role','effort'])
+            ->withTimestamps();
+    }
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
-    protected $hidden = [
+    protected $hidden = [ //nascosto quando convertito in json
         'password',
         'remember_token',
     ];
@@ -42,10 +50,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function projects(){
-        return $this->belongsToMany(Project::class)
-            ->withPivot(['role','effort'])
-            ->withTimestamps();
-    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,6 +11,6 @@ class Tag extends Model
 
     protected $fillable = ['name'];
 
-    public function projects()     { return $this->morphedByMany(Project::class, 'taggable'); }
+    public function projects()     { return $this->morphedByMany(Project::class, 'taggable'); } //polimorfica molti a molti inversa
     public function publications() { return $this->morphedByMany(Publication::class, 'taggable'); }
 }

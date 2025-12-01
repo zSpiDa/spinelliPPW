@@ -5,39 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 
-
 class ProjectController extends Controller
 {
-   public function index()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        $projects = Project::with(['users','milestones','publications','tags','attachments','comments','tasks'])
-            ->orderBy('title')
-            ->get();
-
+        $projects = Project::with(['milestones','tags','publications'])->orderBy('title')->get();
         return view('projects.index', ['projects' => $projects]);
     }
 
-    public function html()
-    {
-        $projects = \App\Models\Project::orderBy('title')->get(['title','status']);
-        $out = '<h2>Progetti</h2><ul>';
-        foreach($projects as $p){ $out .= '<li><strong>'.$p->title.'</strong> ('.($p->status ?? 'n/d').')</li>'; }
-        $out .= '</ul>';
-        return $out;
-    }
-
     /**
-     * API: return projects as JSON (with relations)
+     * Show the form for creating a new resource.
      */
-    public function apiIndex()
-    {
-        $projects = Project::with(['users','milestones','publications','tags','attachments','comments','tasks'])
-            ->orderBy('title')
-            ->get();
-
-        return response()->json($projects, 200);
-    }
-
     public function create()
     {
         //
@@ -82,5 +63,14 @@ class ProjectController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function html()
+    {
+        $projects = \App\Models\Project::orderBy('title')->get(['title','status']);
+        $out = '<h2>Progetti</h2><ul>';
+        foreach($projects as $p){ $out .= '<li><strong>'.$p->title.'</strong> ('.($p->status ?? 'n/d').')</li>'; }
+        $out .= '</ul>';
+        return $out;
     }
 }

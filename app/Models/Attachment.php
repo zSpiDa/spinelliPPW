@@ -1,12 +1,17 @@
 <?php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attachment extends Model
+class Attachment extends Model //Attachment: allegati
 {
-    protected $fillable = ['attachable_type','attachable_id','path','uploaded_by'];
+    use HasFactory; //permette di usare le Factory
 
-    public function attachable() { return $this->morphTo(); }
-    public function uploader()   { return $this->belongsTo(User::class, 'uploaded_by'); }
+    //fillable = Specifica quali colonne del database possono essere assegnate in massa
+    protected $fillable = ['attachable_type','attachable_id','path','uploaded_by']; //path percorso del file
+
+    public function attachable() { return $this->morphTo(); } //relazione polimorfica
+    public function uploader()   { return $this->belongsTo(User::class, 'uploaded_by'); } //uno a molti
 }

@@ -14,4 +14,48 @@
             </div>
         </div>
     </div>
+    @extends('layouts.app')
+    @section('content')
+        Dashboard di {{ $user->name }}
+
+
+
+        Progetti associati
+
+
+
+        @foreach($projects as $p)
+
+            {{ $p->title }} ({{ $p->pivot->role ?? 'n/d' }})
+
+        @endforeach
+
+
+
+
+        Task attivi
+
+
+
+        @foreach($tasks as $t)
+
+            {{ $t->title }} — {{ $t->status }}
+
+        @endforeach
+
+
+
+
+        Pubblicazioni correlate
+
+
+
+        @foreach($publications as $pub)
+
+            {{ $pub->title }} {{ $pub->status ? '(' . $pub->status . ')' : '' }}
+
+        @endforeach
+
+
+    @endsection
 </x-app-layout>

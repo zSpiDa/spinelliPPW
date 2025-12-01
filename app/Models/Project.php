@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,12 +13,12 @@ class Project extends Model
     public function users()
     {
         // pivot: project_user (project_id, user_id, role, effort)
-        return $this->belongsToMany(User::class)
+        return $this->belongsToMany(User::class) //molti a molti
             ->withPivot(['role','effort'])
             ->withTimestamps();
     }
 
-    public function milestones() { return $this->hasMany(Milestone::class); }
+    public function milestones() { return $this->hasMany(Milestone::class); } //uno a molti
 
     public function publications()
     {
@@ -25,8 +26,8 @@ class Project extends Model
         return $this->belongsToMany(Publication::class)->withTimestamps();
     }
 
-    public function attachments() { return $this->morphMany(Attachment::class, 'attachable'); }
+    public function attachments() { return $this->morphMany(Attachment::class, 'attachable'); } //polimorfica uno a molti
     public function comments()    { return $this->morphMany(Comment::class, 'commentable'); }
-    public function tags()        { return $this->morphToMany(Tag::class, 'taggable'); }
-    public function tasks()       { return $this->hasMany(Task::class); }  // <-- aggiunto
+    public function tags()        { return $this->morphToMany(Tag::class, 'taggable'); } //polimorfica molti a molti
+    public function tasks()       { return $this->hasMany(Task::class); }
 }

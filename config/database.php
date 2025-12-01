@@ -38,19 +38,7 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
-            'database' => value(function () {
-                $path = env('DB_DATABASE');
-
-                if (empty($path)) {
-                    return database_path('database.sqlite');
-                }
-
-                // Treat relative paths as relative to the project base path
-                $isAbsolute = Str::startsWith($path, ['/', '\\'])
-                    || (strlen($path) > 1 && ctype_alpha($path[0]) && $path[1] === ':');
-
-                return $isAbsolute ? $path : base_path($path);
-            }),
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
