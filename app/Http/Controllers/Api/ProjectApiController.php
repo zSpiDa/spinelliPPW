@@ -10,7 +10,7 @@ class ProjectApiController extends Controller {
     public function index(Request $r) {
         $query = Project::with('users','tasks','publications');
         if ($r->has('status')) $query->where('status',$r->status);
-        if ($r->has('funder')) $query->where('funder','like','%'.$r->funder.'%');
+        if ($r->has('funder')) $query->where('funder','like','%'.$r->funder.'%'); //il where, in questo caso, permette di trovare progetti il cui funder si trovi da qualsiasi parte del testo.
         return ProjectResource::collection($query->get());
     }
 
