@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{PageController,PublicationController,TaskController};
+use App\Http\Controllers\{ProjectController,PageController,PublicationController,TaskController};
 use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
