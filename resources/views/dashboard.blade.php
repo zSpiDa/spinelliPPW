@@ -1,61 +1,25 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
+@section('content')
+    <h2>Dashboard di {{ $user->name }}</h2>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-    @extends('layouts.app')
-    @section('content')
-        Dashboard di {{ $user->name }}
-
-
-
-        Progetti associati
-
-
-
+    <h4>Progetti associati</h4>
+    <ul>
         @foreach($projects as $p)
-
-            {{ $p->title }} ({{ $p->pivot->role ?? 'n/d' }})
-
+            <li>{{ $p->title }} ({{ $p->pivot->role ?? 'n/d' }})</li>
         @endforeach
+    </ul>
 
-
-
-
-        Task attivi
-
-
-
+    <h4>Task attivi</h4>
+    <ul>
         @foreach($tasks as $t)
-
-            {{ $t->title }} — {{ $t->status }}
-
+            <li>{{ $t->title }} — {{ $t->status }}</li>
         @endforeach
+    </ul>
 
-
-
-
-        Pubblicazioni correlate
-
-
-
+    <h4>Pubblicazioni correlate</h4>
+    <ul>
         @foreach($publications as $pub)
-
-            {{ $pub->title }} {{ $pub->status ? '(' . $pub->status . ')' : '' }}
-
+            <li>{{ $pub->title }} {{ $pub->status ? '(' . $pub->status . ')' : '' }}</li>
         @endforeach
-
-
-    @endsection
-</x-app-layout>
+    </ul>
+@endsection
