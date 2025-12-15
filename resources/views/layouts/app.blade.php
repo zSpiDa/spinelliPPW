@@ -16,7 +16,7 @@
     </nav>
 </header>
 
-<main class="container py-3">@yield('content')>
+<main class="container py-3">
     @yield('content')
 </main>
 

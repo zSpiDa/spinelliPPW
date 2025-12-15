@@ -3,7 +3,7 @@
     Ciao, {{ Auth::user()->name }} ({{ Auth::user()->role }})
 
 
-    Progetti
+    
 
 
 
