@@ -51,12 +51,18 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'  => 'required|string|max:255',
             'status' => 'nullable|string|max:100',
+            'file' => 'nullable|mimes:pdf|max:2048',
         ]);
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('projects', 'public');
+            $validated['file_path'] = $path;
+        }
 
         Project::create($validated);
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Progetto creato con successo');
+        return redirect('/projects')->with('success', 'Progetto creato con successo!');
+
     }
 
 
