@@ -15,3 +15,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/database/*.sqlite
+package-lock.json
+package.json

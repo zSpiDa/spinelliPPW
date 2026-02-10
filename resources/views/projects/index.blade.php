@@ -3,6 +3,13 @@
 @section('content')
     <h2 class="h5 mb-3">Progetti di Ricerca</h2>
 
+
+    <a href="{{ route('projects.create') }}"
+       class="btn btn-sm btn-success mb-3">
+        ➕ Nuovo progetto
+    </a>
+
+
     @forelse ($projects as $p)
         <div class="card mb-3">
             <div class="card-body">
@@ -11,10 +18,31 @@
                         <h3 class="h6 m-0">{{ $p->title }}</h3>
                         <div class="text-muted small">Status: {{ $p->status ?? 'n/d' }}</div>
                     </div>
-                    <a class="btn btn-sm btn-outline-primary" href="{{ route('projects.show', $p->id) }}">Dettagli</a>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-sm btn-outline-primary"
+                       href="{{ route('projects.show', $p) }}">
+                        Dettagli
+                    </a>
+
+                    <a class="btn btn-sm btn-outline-warning"
+                       href="{{ route('projects.edit', $p) }}">
+                        Modifica
+                    </a>
+
+                    <form action="{{ route('projects.destroy', $p) }}"
+                          method="POST"
+                          onsubmit="return confirm('Sei sicuro di eliminare questo progetto?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-outline-danger">
+                            Elimina
+                        </button>
+                    </form>
                 </div>
 
-                @if($p->tags->isNotEmpty())
+
+            @if($p->tags->isNotEmpty())
                     <div class="mt-2 d-flex gap-2 flex-wrap">
                         @foreach($p->tags as $t)
                             <span class="badge text-bg-info">#{{ $t->name }}</span>
