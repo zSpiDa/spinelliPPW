@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\Tag;
+use App\Models\Milestone;
+use App\Models\Publication;
+use App\Models\Attachment;
+use App\Models\Comment;
 
 class ProjectController extends Controller
 {
@@ -51,18 +56,72 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'  => 'required|string|max:255',
             'status' => 'nullable|string|max:100',
-            'file' => 'nullable|mimes:pdf|max:2048',
+            'file' => 'nullable|mimes:pdf|max:20480', // max 20MB
+            'code' => 'nullable|string|max:255',
+            'funder' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string',
+            'tags' => 'nullable|string',
+            'tags.*' => 'string|max:50',
         ]);
 
+        unset($validated['tags']); // Rimuove 'tags' perché non è un campo diretto di Project
+        unset($validated['file']); // Rimuove 'file' perché è già gestito
+        unset($validated['milestones']); // Rimuove 'milestones' perché gestito separatamente
+        unset($validated['publications']); // Rimuove 'publications' perché gestito separatamente
+        $project = Project::create($validated);
+        
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('projects', 'public');
             $validated['file_path'] = $path;
+            $project->attachments()->create([
+                'path' => $path,
+                'uploaded_by' => auth()->id(),
+        ]);
         }
 
-        Project::create($validated);
+        if ($request->filled('tags')) {
+            $tagNames = array_map('trim', explode(',', $request->tags));
+            $tagIds = [];
+            foreach ($tagNames as $name) {
+                $tag = Tag::firstOrCreate(['name' => $name]);
+                $tagIds[] = $tag->id;
+            }
+            $project->tags()->sync($tagIds);
+        }
+        
+        // Parsing milestones da stringa "titolo|data, titolo|data"
+        if ($request->filled('milestones')) {
+            $items = array_map('trim', explode(',', $request->milestones));
+            foreach ($items as $item) {
+                $parts = array_map('trim', explode('|', $item));
+                if (count($parts) >= 2) {
+                    $project->milestones()->create([
+                        'title'    => $parts[0],
+                        'due_date' => $parts[1],
+                        'status'   => 'pending',
+                    ]);
+                }
+            }
+        }
+
+        // Parsing publications da stringa "titolo|anno, titolo|anno"
+        if ($request->filled('publications')) {
+            $items = array_map('trim', explode(',', $request->publications));
+            foreach ($items as $item) {
+                $parts = array_map('trim', explode('|', $item));
+                if (count($parts) >= 2) {
+                    $pub = Publication::create([
+                        'title' => $parts[0],
+                        'year'  => (int) $parts[1],
+                    ]);
+                    $project->publications()->attach($pub->id);
+                }
+            }
+        }
 
         return redirect('/projects')->with('success', 'Progetto creato con successo!');
-
     }
 
 
@@ -85,8 +144,17 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'  => 'required|string|max:255',
             'status' => 'nullable|string|max:100',
+            'code' => 'nullable|string|max:255',
+            'funder' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string',
+            'tags' => 'nullable|string',
+            'tags.*' => 'string|max:50',
         ]);
-
+        
+        unset($validated['tags']); // Rimuove 'tags' perché gestito separatamente
+        unset($validated['file']); // Rimuove 'file' perché non è un campo diretto di Project
         $project->update($validated);
 
         return redirect()->route('projects.show', $project)

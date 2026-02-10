@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{ProjectController, PageController, PublicationController, TaskController};
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
@@ -55,17 +56,24 @@ Route::middleware(['auth'])->group(function () {
 
 // Rotta per CREARE una milestone (collegata al progetto)
 Route::post('/projects/{project}/milestones', [MilestoneController::class, 'store'])
+    ->middleware(['auth', 'role:admin,pi,manager'])
     ->name('projects.milestones.store');
 
 // Rotta per AGGIORNARE una milestone
 Route::put('/milestones/{milestone}', [MilestoneController::class, 'update'])
+    ->middleware(['auth', 'role:admin,pi,manager'])
     ->name('milestones.update');
 
-Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneController::class, 'edit'])->name('milestones.edit');
+Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneController::class, 'edit'])
+    ->middleware(['auth', 'role:admin,pi,manager'])
+    ->name('milestones.edit');
 
 // Rotta per ELIMINARE una milestone
 Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy'])
+    ->middleware(['auth', 'role:admin,pi,manager'])
     ->name('milestones.destroy');
+
+
 
 
 require __DIR__.'/auth.php';

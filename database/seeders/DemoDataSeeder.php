@@ -36,8 +36,8 @@ class DemoDataSeeder extends Seeder
             // 2-3 membri con ruoli coerenti (lowercase)
             $members = $users->random(3);
             foreach ($members as $m) {
-                // pivot role must match project_user enum: 'pi','manager','member'
-                $role = collect(['manager','member'])->random();
+                // pivot role must match project_user enum: 'pi','manager','researcher','collaborator'
+                $role = collect(['manager','researcher','collaborator'])->random();
                 $project->users()->syncWithoutDetaching([
                     $m->id => ['role' => $role, 'effort' => $faker->randomFloat(2, 0.1, 0.8)]
                 ]);

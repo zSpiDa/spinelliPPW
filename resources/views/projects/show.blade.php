@@ -96,16 +96,15 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h3 class="h6">Allegati</h3>
-
-                    @forelse($project->attachments as $att && $project->file_path)
-                        <div class="small mb-2">
-                            <a href="{{ asset('storage/' . $att->path) }}"
-                               target="_blank"
-                               download>
-                                📄 {{ $att->path }}
+                    @forelse($project->attachments as $a)
+                        <div class="border-bottom py-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-bold">{{ basename($a->path) }}</div>
+                                <div class="text-muted small">Caricato il {{ $a->created_at->format('d/m/Y') }}</div>
+                            </div>
+                            <a href="{{ asset('storage/' . $a->path) }}" class="btn btn-sm btn-outline-secondary" download>
+                                <i class="bi bi-download"></i> Scarica
                             </a>
-                            
-                            <span class="text-muted ms-2">(uploader #{{ $att->uploaded_by }})</span>
                         </div>
                     @empty
                         <div class="text-muted">Nessun allegato.</div>

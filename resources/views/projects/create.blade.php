@@ -7,6 +7,16 @@
     <form action="{{ route('projects.store') }}" enctype="multipart/form-data" method="POST">
         @csrf
 
+        @if ($errors->any())
+        <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        </div>
+        @endif
+
         <div class="mb-3">
             <h5 for="title" class="form-label">Titolo</h5>
             <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
@@ -38,6 +48,15 @@
         <div class="mb-3">
             <h5 for="description" class="form-label">Descrizione</h5>
             <textarea class="form-control" id="description" name="description" rows="4">{{ old('description') }}</textarea>
+        </div>
+        <div class="mb-3">
+            <!--form per aggiungere le milestone -->
+            <h5 for="milestones" class="form-label">Milestone (formato: titolo|data, separate da virgola)</h5>
+            <input type="text" class="form-control" id="milestones" name="milestones" value="{{ old('milestones') }}">        
+        </div>
+        <div class="mb-3">
+            <h5 for="publications" class="form-label">Publications (formato: titolo|anno, separate da virgola)</h5>
+            <input type="text" class="form-control" id="publications" name="publications" value="{{ old('publications') }}">
         </div>
         <div class="mb-3">
             <h5 for="tags" class="form-label">Tags (separati da virgola)</h5>
