@@ -8,9 +8,7 @@ use App\Models\User;
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $projects = Project::with(['milestones','tags','publications'])->orderBy('title')->get();
@@ -40,25 +38,28 @@ class ProjectController extends Controller
 
         return redirect()->route('projects.show', $project)->with('success', 'Membro rimosso.');
     }
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
-        //
+        return view('projects.create');
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title'  => 'required|string|max:255',
+            'status' => 'nullable|string|max:100',
+        ]);
+
+        Project::create($validated);
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Progetto creato con successo');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Project $project)
     {
         $project->load(['milestones','publications.authors.user','tags','attachments','comments.user']);
@@ -66,29 +67,36 @@ class ProjectController extends Controller
         return view('projects.show', ['project' => $project, 'users' => $users]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Project $project)
     {
-        //
+        return view('projects.edit', compact('project'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+
+    //Aggiorna Progetto
+    public function update(Request $request, Project $project)
     {
-        //
+        $validated = $request->validate([
+            'title'  => 'required|string|max:255',
+            'status' => 'nullable|string|max:100',
+        ]);
+
+        $project->update($validated);
+
+        return redirect()->route('projects.show', $project)
+            ->with('success', 'Progetto aggiornato');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    //Elimina Progetto
+    public function destroy(Project $project)
     {
-        //
+        $project->delete();
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Progetto eliminato');
     }
+
 
     public function html()
     {
