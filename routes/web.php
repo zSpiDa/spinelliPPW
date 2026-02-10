@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/projects/json', [ProjectController::class, 'index']);
 });
 
-Route::middleware(['auth', 'role:admin,pi'])->group(function () {
+Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
