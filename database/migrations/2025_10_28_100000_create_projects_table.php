@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->enum('status', ['planned', 'ongoing', 'completed'])->default('planned');
+            $table->enum('status', ['planned', 'in progress', 'completed'])->default('planned');
             $table->timestamps();
         });
     }
