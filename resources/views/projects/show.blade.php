@@ -80,14 +80,14 @@
                 <div class="card-body">
                     <h3 class="h6">Allegati</h3>
 
-                    @forelse($project->attachments as $att)
+                    @forelse($project->attachments as $att && $project->file_path)
                         <div class="small mb-2">
                             <a href="{{ asset('storage/' . $att->path) }}"
                                target="_blank"
                                download>
                                 📄 {{ $att->path }}
                             </a>
-
+                            
                             <span class="text-muted ms-2">(uploader #{{ $att->uploaded_by }})</span>
                         </div>
                     @empty

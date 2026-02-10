@@ -13,10 +13,10 @@
         </div>
         <div class="mb-3">
             <h5 for="status" class="form-label">Stato</h5>
-            <select class="form-control" id="status" name="status" required>
-                <option value="planned" {{ old('status') == 'planned' ? 'selected' : '' }}>Planned</option>
+            <select class="form-control" id="status" name="status">
+                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Planned</option>
                 <option value="ongoing" {{ old('status') == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
-                <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Completed</option>
             </select>
         </div>
         <div class="mb-3">
@@ -44,8 +44,8 @@
             <input type="text" class="form-control" id="tags" name="tags" value="{{ old('tags') }}">
         </div>
         <div class="mb-3">
-            <h5 for="files" class="form-label">Allega file</h5>
-            <input type="file" class="form-control" id="files" name="files[]" accept=".pdf">
+            <h5 for="file" class="form-label">Allega file</h5>
+            <input type="file" class="form-control" id="file" name="file" accept=".pdf">
         </div>
         <button type="submit" class="btn btn-primary">Crea progetto</button>
     </form>

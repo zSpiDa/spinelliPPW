@@ -52,6 +52,11 @@ class ProjectController extends Controller
             'title'  => 'required|string|max:255',
             'status' => 'nullable|string|max:100',
             'file' => 'nullable|mimes:pdf|max:2048',
+            'code' => 'nullable|string|max:255',
+            'funder' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string',
         ]);
 
         if ($request->hasFile('file')) {
@@ -59,6 +64,7 @@ class ProjectController extends Controller
             $validated['file_path'] = $path;
         }
 
+        unset($validated['file']);
         Project::create($validated);
 
         return redirect('/projects')->with('success', 'Progetto creato con successo!');
@@ -85,8 +91,20 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'  => 'required|string|max:255',
             'status' => 'nullable|string|max:100',
+            'code' => 'nullable|string|max:255',
+            'funder' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string',
+            'file' => 'nullable|mimes:pdf|max:2048',
         ]);
 
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('projects', 'public');
+            $validated['file_path'] = $path;
+        }
+
+        unset($validated['file']);
         $project->update($validated);
 
         return redirect()->route('projects.show', $project)
