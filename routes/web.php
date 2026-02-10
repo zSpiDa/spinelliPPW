@@ -7,6 +7,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', [PageController::class, 'home']);
 
@@ -16,24 +21,51 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
+// ----------------------------------------------------------------------
+// 1. PRIMA LE ROTTE SPECIFICHE (Admin, PI, Manager)
+// Devono stare qui in alto, altrimenti "create" viene scambiato per un ID
+// ----------------------------------------------------------------------
 Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    // Altre rotte protette da ruolo
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
     Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.addMember');
     Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
     Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])->name('projects.sync');
 });
 
+// ----------------------------------------------------------------------
+// 2. POI LE ROTTE GENERICHE (Auth standard)
+// Qui c'è la resource che contiene 'show' (/projects/{id})
+// ----------------------------------------------------------------------
 Route::middleware(['auth'])->group(function () {
+    // Nota: except store/create/destroy perché sono gestite sopra
     Route::resource('projects', ProjectController::class)->except(['store', 'create', 'destroy']);
     Route::resource('publications', PublicationController::class);
     Route::resource('tasks', TaskController::class);
     Route::get('/projects/json', [ProjectController::class, 'index']);
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/users/edit', [UserController::class, 'edit'])->name('users.edit');
 });
+
+// Rotta per CREARE una milestone (collegata al progetto)
+Route::post('/projects/{project}/milestones', [MilestoneController::class, 'store'])
+    ->name('projects.milestones.store');
+
+// Rotta per AGGIORNARE una milestone
+Route::put('/milestones/{milestone}', [MilestoneController::class, 'update'])
+    ->name('milestones.update');
+
+Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneController::class, 'edit'])->name('milestones.edit');
+
+// Rotta per ELIMINARE una milestone
+Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy'])
+    ->name('milestones.destroy');
+
 
 require __DIR__.'/auth.php';

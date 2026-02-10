@@ -39,6 +39,7 @@ class ProjectApiController extends Controller {
             'status' => 'sometimes|in:active,completed,on_hold',
         ]);
         $project->update($validated);
+
         return new ProjectResource($project);
     }
 
