@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('funder')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('status')->nullable();  // semplice string, più flessibile di enum
+            $table->enum('status', ['active', 'ongoing', 'draft'])->default('active');
             $table->text('description')->nullable();
             $table->timestamps();
         });
