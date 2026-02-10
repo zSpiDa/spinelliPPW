@@ -9,7 +9,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('role')->nullable();     // pi, project_manager, researcher, collaborator
+            $table->string('role')->nullable();
             $table->decimal('effort', 4, 2)->nullable();
             $table->timestamps();
             $table->unique(['project_id','user_id']);
