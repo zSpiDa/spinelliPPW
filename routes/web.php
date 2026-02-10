@@ -30,15 +30,17 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::resource('projects', ProjectController::class);
+    Route::resource('projects', ProjectController::class)->except(['store', 'create', 'destroy']);
     Route::resource('publications', PublicationController::class);
     Route::resource('tasks', TaskController::class);
     Route::get('/projects/json', [ProjectController::class, 'index']);
 });
 
-Route::delete('/projects/{project}', [ProjectController::class,'destroy'])
-    ->middleware(['auth','role:admin,pi'])
-    ->name('projects.destroy');
+Route::middleware(['auth', 'role:admin,pi'])->group(function () {
+    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+});
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
@@ -64,5 +66,6 @@ Route::delete('/projects/{project}/members/{user}', [ProjectController::class, '
 Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])
         ->middleware(['auth', 'role:admin,pi'])
         ->name('projects.sync');
+
 
 require __DIR__.'/auth.php';

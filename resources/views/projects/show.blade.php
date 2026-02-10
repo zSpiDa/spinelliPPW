@@ -109,8 +109,15 @@
                 <div class="card-body">
                     <h3 class="h6">Membri del progetto</h3>
                     @forelse($project->users as $u)
-                        <div class="border-bottom py-2">
+                        <div class="border-bottom py-2 d-flex justify-content-between align-items-center">
                             <div class="small"><strong>{{ $u->name }}</strong> ({{ $u->pivot->role ?? 'n/d' }})</div>
+                            <form method="POST" action="{{ route('projects.removeMember', [$project, $u]) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Rimuovere questo membro?')">
+                                    Rimuovi
+                                </button>
+                            </form>
                         </div>
                     @empty
                         <div class="text-muted">Nessun membro assegnato.</div>
@@ -134,9 +141,9 @@
                         <label for="role" class="form-label">Seleziona ruolo</label>
                         <select class="form-select" id="role" name="role" required>
                             <option value="">-- Seleziona ruolo --</option>
-                            <option value="researcher">Researcher</option>
                             <option value="pi">PI</option>
                             <option value="manager">Project Manager</option>
+                            <option value="researcher">Researcher</option>
                             <option value="collaborator">Collaborator</option>
                         </select>
                     </div>

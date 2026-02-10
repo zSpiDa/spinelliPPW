@@ -17,25 +17,28 @@ class ProjectController extends Controller
         return view('projects.index', ['projects' => $projects]);
     }
 
-    public function addMember()
+    public function addMember(Request $request, Project $project)
     {
-        $projects = Project::all();
-        $users = User::all();
-        return view('projects.addMember', ['projects' => $projects, 'users' => $users]);
+        $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+            'role'    => ['required', 'in:pi,manager,researcher,collaborator'],
+        ]);
+
+        $project->users()->syncWithoutDetaching([
+            $request->user_id => [
+                'role'   => $request->role,
+                'effort' => $request->effort ?? null,
+            ],
+        ]);
+
+        return redirect()->route('projects.show', $project)->with('success', 'Membro aggiunto.');
     }
 
-    public function removeMember()
+    public function removeMember(Project $project, User $user)
     {
-        $projects = Project::all();
-        $users = User::all();
-        return view('projects.removeMember', ['projects' => $projects, 'users' => $users]);
-    }
+        $project->users()->detach($user->id);
 
-    public function syncMembers()
-    {
-        $projects = Project::all();
-        $users = User::all();
-        return view('projects.sync', ['projects' => $projects, 'users' => $users]);
+        return redirect()->route('projects.show', $project)->with('success', 'Membro rimosso.');
     }
     /**
      * Show the form for creating a new resource.
@@ -59,7 +62,8 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $project->load(['milestones','publications.authors.user','tags','attachments','comments.user']);
-        return view('projects.show', ['project' => $project]);
+        $users = User::all();
+        return view('projects.show', ['project' => $project, 'users' => $users]);
     }
 
     /**
