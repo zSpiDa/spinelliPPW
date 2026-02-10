@@ -102,5 +102,47 @@
                 </div>
             </div>
         </div>
+
+        <!-- aggiunta e rimozione membri (solo per PI e Manager) con form di ricerca utenti e selezione ruolo (collaboratore, manager, pi, researcher) -->
+        <div>
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h6">Membri del progetto</h3>
+                    @forelse($project->users as $u)
+                        <div class="border-bottom py-2">
+                            <div class="small"><strong>{{ $u->name }}</strong> ({{ $u->pivot->role ?? 'n/d' }})</div>
+                        </div>
+                    @empty
+                        <div class="text-muted">Nessun membro assegnato.</div>
+                    @endforelse
+                </div>
+            <!-- form di ricerca utenti e selezione ruolo (collaboratore, manager, pi, researcher) -->
+            <div class="card-footer">
+                <h3 class="h6">Aggiungi membro</h3>
+                <form method="POST" action="{{ route('projects.addMember', $project) }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="user_id" class="form-label">Seleziona utente</label>
+                        <select class="form-select" id="user_id" name="user_id" required>
+                            <option value="">-- Seleziona utente --</option>
+                            @foreach($users as $u)
+                                <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Seleziona ruolo</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="">-- Seleziona ruolo --</option>
+                            <option value="researcher">Researcher</option>
+                            <option value="pi">PI</option>
+                            <option value="manager">Project Manager</option>
+                            <option value="collaborator">Collaborator</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Aggiungi membro</button>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection

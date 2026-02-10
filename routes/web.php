@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{ProjectController,PageController,PublicationController,TaskController};
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -42,5 +44,25 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
+Route::get('/users', [UserController::class, 'index'])
+    ->middleware(['auth', 'role:admin,pi'])
+    ->name('users.index');
+
+Route::get('/users/edit', [UserController::class, 'edit'])
+    ->middleware(['auth'])
+    ->name('users.edit');
+
+
+Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])
+        ->middleware(['auth', 'role:admin,pi'])
+        ->name('projects.addMember');
+
+Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])
+        ->middleware(['auth', 'role:admin,pi'])
+        ->name('projects.removeMember');
+
+Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])
+        ->middleware(['auth', 'role:admin,pi'])
+        ->name('projects.sync');
 
 require __DIR__.'/auth.php';

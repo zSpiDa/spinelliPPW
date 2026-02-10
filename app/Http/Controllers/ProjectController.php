@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\User;
 
 class ProjectController extends Controller
 {
@@ -16,6 +17,26 @@ class ProjectController extends Controller
         return view('projects.index', ['projects' => $projects]);
     }
 
+    public function addMember()
+    {
+        $projects = Project::all();
+        $users = User::all();
+        return view('projects.addMember', ['projects' => $projects, 'users' => $users]);
+    }
+
+    public function removeMember()
+    {
+        $projects = Project::all();
+        $users = User::all();
+        return view('projects.removeMember', ['projects' => $projects, 'users' => $users]);
+    }
+
+    public function syncMembers()
+    {
+        $projects = Project::all();
+        $users = User::all();
+        return view('projects.sync', ['projects' => $projects, 'users' => $users]);
+    }
     /**
      * Show the form for creating a new resource.
      */
