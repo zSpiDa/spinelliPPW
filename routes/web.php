@@ -53,4 +53,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/edit', [UserController::class, 'edit'])->name('users.edit');
 });
 
+// Rotta per CREARE una milestone (collegata al progetto)
+Route::post('/projects/{project}/milestones', [MilestoneController::class, 'store'])
+    ->name('projects.milestones.store');
+
+// Rotta per AGGIORNARE una milestone
+Route::put('/milestones/{milestone}', [MilestoneController::class, 'update'])
+    ->name('milestones.update');
+
+Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneController::class, 'edit'])->name('milestones.edit');
+
+// Rotta per ELIMINARE una milestone
+Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy'])
+    ->name('milestones.destroy');
+
+
 require __DIR__.'/auth.php';

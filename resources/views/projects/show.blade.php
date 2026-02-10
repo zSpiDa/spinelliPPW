@@ -36,13 +36,30 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h3 class="h6">Milestone ({{ $project->milestones->count() }})</h3>
+
                     @forelse($project->milestones as $m)
-                        <div class="border-bottom py-2">
-                            <div class="fw-semibold">{{ $m->title }}</div>
-                            <div class="text-muted small">Scadenza: {{ $m->due_date ?? 'n/d' }} | Stato: {{ $m->status ?? 'n/d' }}</div>
+                        <div class="border-bottom py-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-bold">{{ $m->title }}</div>
+                                <div class="text-muted small">
+                                    Scadenza: {{ $m->due_date ?? 'n/d' }} | Stato: {{ $m->status ?? 'n/d' }}
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('milestones.edit', $m->id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Modifica
+                                </a>
+
+                                <form action="{{ route('milestones.destroy', $m->id) }}" method="POST" onsubmit="return confirm('Eliminare questa milestone?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">X</button>
+                                </form>
+                            </div>
                         </div>
                     @empty
-                        <div class="text-muted">Nessuna milestone.</div>
+                        <div class="text-muted mt-2">Nessuna milestone inserita.</div>
                     @endforelse
                 </div>
             </div>
@@ -132,6 +149,7 @@
                         <div class="text-muted">Nessun membro assegnato.</div>
                     @endforelse
                 </div>
+
             <!-- form di ricerca utenti e selezione ruolo (collaboratore, manager, pi, researcher) -->
             <div class="card-footer">
                 <h3 class="h6">Aggiungi membro</h3>
