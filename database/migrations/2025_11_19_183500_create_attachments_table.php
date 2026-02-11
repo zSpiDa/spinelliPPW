@@ -12,12 +12,6 @@ return new class extends Migration {
             $table->foreignId('uploaded_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
-        if (isset($path)) {
-            $project->attachments()->create([
-                'path' => $path,
-                'uploaded_by' => auth()->id(),
-            ]);
-        }
     }
     public function down(): void { Schema::dropIfExists('attachments'); }
 };

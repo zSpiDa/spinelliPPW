@@ -2,6 +2,7 @@
     @auth
         <li class="nav-item"><span class="nav-link">Ciao, {{ Auth::user()->name }} ({{ Auth::user()->role }})</span></li>
         <li class="nav-item"><a class="nav-link" href="{{ route('projects.index') }}">Progetti</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('publications.index') }}">Pubblicazioni</a></li>
         <li class="nav-item">
             <a class="nav-link" href="{{ route('logout') }}"
                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
