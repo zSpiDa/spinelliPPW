@@ -3,17 +3,15 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-12"> {{-- Uso col-12 per avere più spazio per la tabella --}}
+            <div class="col-md-12">
                 <div class="card">
 
-                    {{-- Intestazione stile Card, come nel tuo esempio --}}
                     <div class="card-header fw-bold d-flex justify-content-between align-items-center">
                         <span>Tutte le Tasks</span>
                     </div>
 
                     <div class="card-body">
 
-                        {{-- Tabella Bootstrap --}}
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
@@ -28,9 +26,9 @@
                                 <tbody>
                                 @forelse($tasks as $task)
                                     <tr>
-                                        {{-- Colonna Titolo e Scadenza --}}
                                         <td>
-                                            <div class="fw-bold">{{ $task->title }}</div>
+                                            <div class="fw-bold">{{ str_replace('Task: ', '', $task->title) }}</div>
+
                                             @if($task->due_date)
                                                 <small class="text-muted">
                                                     Scadenza: {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}
@@ -38,7 +36,6 @@
                                             @endif
                                         </td>
 
-                                        {{-- Colonna Stato (Badge Bootstrap) --}}
                                         <td>
                                             @php
                                                 $badgeClass = match($task->status) {
@@ -53,7 +50,6 @@
                                         </span>
                                         </td>
 
-                                        {{-- Colonna Collegamenti (Progetto/Milestone) --}}
                                         <td>
                                             <div>
                                                 <small class="text-muted">Progetto:</small><br>
@@ -69,7 +65,6 @@
                                             @endif
                                         </td>
 
-                                        {{-- Colonna Assegnatario --}}
                                         <td>
                                             @if($task->user)
                                                 <span class="badge bg-info text-dark">{{ $task->user->name }}</span>
@@ -78,7 +73,6 @@
                                             @endif
                                         </td>
 
-                                        {{-- Colonna Azioni --}}
                                         <td class="text-end">
                                             <a href="{{ route('projects.show', $task->project) }}" class="btn btn-sm btn-outline-secondary">
                                                 Vedi nel Progetto
@@ -96,8 +90,7 @@
                             </table>
                         </div>
 
-                        {{-- Paginazione (se ci sono molti task) --}}
-                        <div class="mt-3">
+                        <div class="mt-0.5">
                             {{ $tasks->links() }}
                         </div>
 
