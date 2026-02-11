@@ -73,7 +73,11 @@ Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy']
     ->middleware(['auth', 'role:admin,pi,manager'])
     ->name('milestones.destroy');
 
-
+//Rotta middleware per evitare che researcher modifichi progetto
+Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+});
 
 
 require __DIR__.'/auth.php';
