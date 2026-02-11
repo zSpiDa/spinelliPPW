@@ -11,7 +11,11 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        // Carica le task con i collegamenti a Progetto, Milestone e Utente assegnato
+        // 'latest()' le ordina dalla più recente
+        $tasks = \App\Models\Task::with(['project', 'milestone', 'user'])->latest()->paginate(10);
+
+        return view('task.index', compact('tasks'));
     }
 
     /**
