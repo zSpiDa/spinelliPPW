@@ -10,6 +10,7 @@ class PageController extends Controller
 {
     public function home(){
         $group = Group::with('users')->first();
+        $memberCount = $group ? $group->users()->count() : 0;
         $projectCount = Project::count();
         return view('home', ['projectCount' => $projectCount, 'group' => $group]);
     }

@@ -21,8 +21,5 @@
             </a>
         </li>
         <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display:none;">@csrf</form>
-    @else
-        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Accedi</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Registrati</a></li>
     @endauth
 </ul>

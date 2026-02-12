@@ -10,10 +10,13 @@
 @include('profile.partials.navbar')
 <header class="mb-3 border-bottom pb-2 d-flex align-items-center justify-content-between">
     <h1 class="h4 m-0">Gestionale IVU Lab</h1>
+    @auth
     <nav class="d-flex gap-3">
         <a href="/" class="link-primary">Home</a>
         <a href="/projects" class="link-primary">Progetti</a>
+        <a href="/dashboard" class="link-primary">Dashboard</a>
     </nav>
+    @endauth
 </header>
 
 <main class="container py-3">
