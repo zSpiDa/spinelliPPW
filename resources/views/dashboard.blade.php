@@ -69,7 +69,7 @@
         {{-- Task --}}
         <div class="col-12 col-md-6">
             <div class="card h-100">
-                <div class="card-header fw-semibold">I tuoi Task</div>
+                <div class="card-header fw-semibold">Task personali</div>
                 <div class="card-body p-0">
                     {{-- Filtriamo per 'user_id' uguale all'id dell'utente loggato --}}
                     @forelse($myTasks as $task)
