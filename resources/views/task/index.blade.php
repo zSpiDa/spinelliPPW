@@ -39,17 +39,17 @@
                                         <td>
                                             @php
                                                 $statusBtnClass = match($task->status) {
-                                                    'done', 'completed' => 'btn-outline-success', // Verde
-                                                    'in_progress', 'ongoing' => 'btn-outline-warning', // Giallo
-                                                    'open', 'todo' => 'btn-outline-danger',  // Rosso
-                                                    default => 'btn-outline-secondary'
+                                                    'done'        => 'btn-outline-success', // Verde
+                                                    'in_progress' => 'btn-outline-warning', // Giallo
+                                                    'open'        => 'btn-outline-danger',  // Rosso
+                                                    default       => 'btn-outline-secondary'
                                                 };
 
                                                 $statusLabel = match($task->status) {
-                                                    'done', 'completed' => 'Completato',
-                                                    'in_progress', 'ongoing' => 'In Corso',
-                                                    'open', 'todo' => 'Da Fare',
-                                                    default => ucfirst($task->status)
+                                                    'done'        => 'Completata',
+                                                    'in_progress' => 'In Corso',
+                                                    'open'        => 'Da Fare',
+                                                    default       => ucfirst($task->status)
                                                 };
                                             @endphp
                                             <span class="btn btn-sm {{ $statusBtnClass }} fw-bold disabled py-0 px-2"
