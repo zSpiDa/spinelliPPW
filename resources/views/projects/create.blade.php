@@ -50,14 +50,40 @@
             <textarea class="form-control" id="description" name="description" rows="4">{{ old('description') }}</textarea>
         </div>
         <div class="mb-3">
-            <!--form per aggiungere le milestone -->
-            <h5 for="milestones" class="form-label">Milestone (formato: titolo|data, separate da virgola)</h5>
-            <input type="text" class="form-control" id="milestones" name="milestones" value="{{ old('milestones') }}">        
+            <h5>Milestone</h5>
+            <div id="milestones-container">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addMilestone()">
+                + Aggiungi milestone
+            </button>
         </div>
-        <div class="mb-3">
-            <h5 for="publications" class="form-label">Publications (formato: titolo|anno, separate da virgola)</h5>
-            <input type="text" class="form-control" id="publications" name="publications" value="{{ old('publications') }}">
-        </div>
+                <script>
+                    let milestoneIndex = 0;
+                    function addMilestone() {
+                        const container = document.getElementById('milestones-container');
+                        const row = document.createElement('div');
+                        row.className = 'row g-2 mb-2';
+                        row.innerHTML = `
+                            <div class="col">
+                                <input type="text" class="form-control" name="milestones[${milestoneIndex}][title]" placeholder="Titolo">
+                            </div>
+                            <div class="col">
+                                <input type="date" class="form-control" name="milestones[${milestoneIndex}][due_date]" placeholder="Data scadenza">
+                            </div>
+                            <div class="col">
+                                <select class="form-control" name="milestones[${milestoneIndex}][status]">
+                                    <option value="planned">Planned</option>
+                                    <option value="ongoing">Ongoing</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-danger" onclick="this.closest('.row').remove()">X</button>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                        milestoneIndex++;
+                    }
+                </script>
         <div class="mb-3">
             <h5 for="tags" class="form-label">Tags (separati da virgola)</h5>
             <input type="text" class="form-control" id="tags" name="tags" value="{{ old('tags') }}">

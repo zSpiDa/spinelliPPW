@@ -13,8 +13,15 @@ class DemoDataSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-
-        // 1) Utenti (8 random) + 1 PI
+        // 1) Gruppi di ricerca
+        $group = ['AI Research', 'Bioinformatics', 'Quantum Computing', 'Cybersecurity', 'Data Science'];
+        foreach ($group as $g) {
+            \App\Models\Group::create([
+                'name' => $g,
+                'description' => $faker->paragraph(),
+            ]);
+        }
+        // 2) Utenti (8 random) + 1 PI
         $users = User::factory()->count(8)->create();
         $pi = User::firstOrCreate(
             ['email' => 'pi@example.com'],

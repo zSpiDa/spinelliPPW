@@ -30,4 +30,5 @@ class Project extends Model
     public function comments()    { return $this->morphMany(Comment::class, 'commentable'); }
     public function tags()        { return $this->morphToMany(Tag::class, 'taggable'); } //polimorfica molti a molti
     public function tasks()       { return $this->hasMany(Task::class); }
+    public function group()       { return $this->belongsTo(Groups::class); } //molti a uno
 }
