@@ -6,6 +6,7 @@ use App\Http\Controllers\{ProjectController, PageController, PublicationControll
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
@@ -80,5 +81,10 @@ Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 });
 
+// Rotta per SALVARE un commento (collegato al progetto)
+Route::post('/projects/{project}/comments', [CommentsController::class, 'store'])->name('projects.comments.store');
+
+// Rotta per ELIMINARE un commento
+Route::delete('/comments/{comment}', [App\Http\Controllers\CommentsController::class, 'destroy'])->name('comments.destroy');
 
 require __DIR__.'/auth.php';

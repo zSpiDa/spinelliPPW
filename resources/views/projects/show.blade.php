@@ -15,7 +15,7 @@
             @if($project->tags->isNotEmpty())
                 <div class="mt-2 d-flex gap-2 flex-wrap">
                     @foreach($project->tags as $t)
-                        <span class="badge text-bg-info">#{{ $t->name }}</span>
+                        <span class="badge tet-bg-info">#{{ $t->name }}</span>
                     @endforeach
                 </div>
             @endif
@@ -116,14 +116,49 @@
         <div class="col-12 col-lg-6">
             <div class="card h-100">
                 <div class="card-body">
-                    <h3 class="h6">Commenti</h3>
-                    @forelse($project->comments as $c)
-                        <div class="border-bottom py-2">
-                            <div class="small"><strong>{{ optional($c->user)->name ?? 'utente n/d' }}:</strong> {{ $c->body }}</div>
+                    <h3 class="h6 mb-3">Commenti ({{ $project->comments->count() }})</h3>
+
+                    <form action="{{ route('projects.comments.store', $project->id) }}" method="POST" class="mb-4">
+                        @csrf
+                        <div class="input-group">
+                            <input type="text" name="body" class="form-control" placeholder="Scrivi un commento..." required>
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="bi bi-send"></i> Invia
+                            </button>
                         </div>
-                    @empty
-                        <div class="text-muted">Nessun commento.</div>
-                    @endforelse
+                    </form>
+
+                    <div class="vstack gap-3">
+                        @forelse($project->comments as $c)
+                            <div class="border-bottom py-2">
+                                <div class="d-flex justify-content-between align-items-start">
+
+                                    <div>
+                                        <div class="mb-1">
+                                            <strong>{{ optional($c->user)->name ?? 'Utente n/d' }}</strong>
+                                            <span class="text-muted small ms-2">{{ $c->created_at->format('d/m/Y H:i') }}</span>
+                                        </div>
+                                        <div class="text-break">{{ $c->body }}</div>
+                                    </div>
+
+                                    @if(auth()->id() === $c->user_id)
+                                        <form action="{{ route('comments.destroy', $c->id) }}" method="POST"
+                                              onsubmit="return confirm('Sei sicuro di voler eliminare questo commento?');">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="btn btn-sm btn-link text-danger text-decoration-none p-0">
+                                                Elimina <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-muted small">Nessun commento presente.</div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>
