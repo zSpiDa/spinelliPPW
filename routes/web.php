@@ -6,8 +6,8 @@ use App\Http\Controllers\{ProjectController, PageController, PublicationControll
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MilestoneController;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\GroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,11 +83,12 @@ Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
 
 //Rotta per il gruppo di ricerca con middleware
 Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
-    Route::get('/groups/edit', [GroupController::class, 'edit'])->name('groups.edit');
-    Route::post('/groups/update', [GroupController::class, 'update'])->name('groups.update');
-    Route::post('/groups/add-member', [GroupController::class, 'addMember'])->name('groups.addMember');
-    Route::delete('/groups/remove-member/{userId}', [GroupController::class, 'removeMember'])->name('groups.removeMember');
-    Route::post('/groups/sync-members', [GroupController::class, 'syncMembers'])->name('groups.syncMembers');
+    Route::get('/groups', [App\Http\Controllers\GroupController::class, 'show'])->name('groups.show');
+    Route::post('/groups/update', [App\Http\Controllers\GroupController::class, 'update'])->name('groups.update');
+    Route::post('/groups/add-member', [App\Http\Controllers\GroupController::class, 'addMember'])->name('groups.addMember');
+    Route::delete('/groups/remove-member/{userId}', [App\Http\Controllers\GroupController::class, 'removeMember'])->name('groups.removeMember');
+    Route::post('/groups/sync-members', [App\Http\Controllers\GroupController::class, 'syncMembers'])->name('groups.syncMembers');
 });
+
 
 require __DIR__.'/auth.php';
