@@ -12,7 +12,7 @@ class PublicationController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('role:pi,manager')->only(['create','store','edit','update','destroy']);
+        $this->middleware('role:pi,manager,researcher')->only(['create','store','edit','update','destroy']);
     }
 
     /**
@@ -100,45 +100,52 @@ class PublicationController extends Controller
      */
     public function update(Request $request, Publication $publication)
     {
+        // Validiamo i dati usando il metodo helper privato sotto
         $validated = $this->validateData($request);
 
-        DB::transaction(function () use ($request, $publication, $validated) {
-            $publication->update($validated);
+        DB::transaction(function () use ($request, $validated) {
 
-            // Stato: semplice validazione della transizione consentita
-            $allowed = ['drafting','submitted','accepted','published'];
-            if ($request->filled('status') && in_array($request->status, $allowed)) {
-                $publication->status = $request->status;
-                $publication->save();
+            $publicationData = Arr::except($validated, ['authors', 'projects', 'materials', 'main_pdf']);
+
+            // Creiamo la riga nella tabella publications
+            $publication = Publication::create($publicationData);
+
+            // Salvataggio relazioni (Progetti)
+            if (!empty($validated['projects'])) {
+                $publication->projects()->sync($validated['projects']);
             }
 
-            // Progetti collegati
-            $publication->projects()->sync($request->input('projects', []));
-
-            // Autori con ordine
+            // Salvataggio Autori (usiamo il metodo helper dedicato)
             $this->syncAuthors($publication, $request);
 
-            // Upload file PDF principale (opzionale, sovrascrive aggiungendo nuovo attachment)
+            // Upload PDF principale
             if ($request->hasFile('main_pdf')) {
-                $path = $request->file('main_pdf')->store('public/publications/'.$publication->id);
+                // Salva in storage/app/public/publications/{id}
+                $path = $request->file('main_pdf')->store('publications/' . $publication->id, 'public');
+
+                // Aggiorna il campo nel DB (o crea un allegato se usi tabella separata)
+                // Se usi una tabella separata 'attachments':
                 $publication->attachments()->create([
                     'path' => $path,
-                    'uploaded_by' => $request->user()->id,
+                    'type' => 'main_pdf', // Esempio
+                    'uploaded_by' => auth()->id(),
                 ]);
             }
-            // Upload materiali aggiuntivi (multipli)
+
+            // Upload Materiali Aggiuntivi
             if ($request->hasFile('materials')) {
                 foreach ($request->file('materials') as $file) {
-                    $path = $file->store('public/publications/'.$publication->id.'/materials');
+                    $path = $file->store('publications/' . $publication->id . '/materials', 'public');
                     $publication->attachments()->create([
                         'path' => $path,
-                        'uploaded_by' => $request->user()->id,
+                        'type' => 'material',
+                        'uploaded_by' => auth()->id(),
                     ]);
                 }
             }
         });
 
-        return redirect()->route('publications.show', $publication)->with('success', 'Pubblicazione aggiornata.');
+        return redirect()->route('publications.index')->with('success', 'Pubblicazione creata con successo.');
     }
 
     /**
