@@ -9,7 +9,7 @@
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">{{ $publication->title }}</h1>
         <div>
-            @if(Auth::user() && in_array(Auth::user()->role, ['admin','pi','manager']))
+            @if(Auth::user() && in_array(Auth::user()->role, ['pi','manager']))
             <a href="{{ route('publications.edit', $publication) }}" class="text-blue-700 mr-3">Modifica</a>
             @endif
             <a href="{{ route('publications.index') }}" class="text-gray-700">Torna alla lista</a>

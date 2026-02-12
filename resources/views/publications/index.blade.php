@@ -4,7 +4,7 @@
 <div class="container mx-auto p-4">
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-2xl font-bold">Pubblicazioni</h1>
-        @if(Auth::user() && in_array(Auth::user()->role, ['admin','pi','manager']))
+        @if(Auth::user() && in_array(Auth::user()->role, ['pi','manager']))
         <a href="{{ route('publications.create') }}" class="inline-block bg-blue-600 text-black font-bold px-4 py-2 rounded shadow hover:bg-blue-700">Nuova</a>
         @endif
     </div>
@@ -45,7 +45,7 @@
                         @endforeach
                     </td>
                     <td class="p-2 text-right">
-                        @if(Auth::user() && in_array(Auth::user()->role, ['admin','pi','manager']))
+                        @if(Auth::user() && in_array(Auth::user()->role, ['pi','manager']))
                         <a class="text-blue-700 mr-2" href="{{ route('publications.edit', $pub) }}">Modifica</a>
                         <form action="{{ route('publications.destroy', $pub) }}" method="POST" class="inline" onsubmit="return confirm('Eliminare?')">
                             @csrf @method('DELETE')
