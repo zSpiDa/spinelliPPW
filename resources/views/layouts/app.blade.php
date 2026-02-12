@@ -19,8 +19,8 @@
             <a href="{{ route('tasks.index') }}" class="nav-link">Tasks</a>
             <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
             
-            <span class="text-muted">|</span>
-            <h1 class="h6 m-0">Ciao, {{ Auth::user()->name }}</h1>
+            <span class="text-muted">|</span>s
+            <a href="{{ route('profile.edit') }}" class="nav-link">Ciao, {{ Auth::user()->name }} ({{ Auth::user()->role }})</a>
             <a href="{{ route('logout') }}" class="btn btn-outline-secondary btn-sm"
                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 Logout

@@ -20,8 +20,8 @@
                 <label for="description" class="form-label">Descrizione</label>
                 <textarea name="description" id="description" class="form-control">{{ $group->description }}</textarea>
             </div>
+        </form>
             <div class="mb-3">
-                <
                 <h5>Membri del Gruppo ({{ $memberCount }})</h5>
                 <!-- Rimozione membri dal gruppo con tasto accanto al nome -->
                 <ul class="list-group">
@@ -31,7 +31,6 @@
                             <form action="{{ route('groups.removeMember', $user->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <input type="hidden" name="user_id" value="{{ $user->id }}">
                                 <button type="submit" class="btn btn-sm btn-danger">Rimuovi</button>
                             </form>
                         </li>
@@ -39,7 +38,6 @@
                 </ul>
             </div>
         </div>
-        </form>
         <!-- Form per aggiungere membri al gruppo -->
         <form action="{{ route('groups.addMember') }}" method="POST" class="mb-4">
             @csrf

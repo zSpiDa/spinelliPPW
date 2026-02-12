@@ -32,8 +32,11 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        if ($request->filled('password')) {
+            $request->user()->password = bcrypt($request->password);
+        }
+        
         $request->user()->save();
-
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
