@@ -92,9 +92,9 @@
                     </div>
                 </div>
 
-                <div class="card mb-5 border-warning" style="border-width: 1px;">
-                    <div class="card-header bg-warning bg-opacity-10 fw-bold border-warning text-dark">
-                        👥 Gestione Membri del Team
+                <div class="card mb-5">
+                    <div class="card-header fw-bold">
+                        Gestione Membri del Team
                     </div>
                     <div class="card-body">
 
@@ -147,7 +147,6 @@
                                     <select class="form-select" name="user_id" required>
                                         <option value="">-- Seleziona --</option>
                                         @foreach($users as $u)
-                                            {{-- Disabilita se già membro --}}
                                             @php $isMember = $project->users->contains($u->id); @endphp
                                             <option value="{{ $u->id }}" {{ $isMember ? 'disabled' : '' }}>
                                                 {{ $u->name }} {{ $isMember ? '(Già presente)' : '' }}
