@@ -26,9 +26,9 @@
                             <div class="mb-3">
                                 <label for="status" class="form-label">Stato</label>
                                 <select class="form-select" id="status" name="status">
-                                    <option value="active" {{ $project->status == 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="ongoing" {{ $project->status == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
-                                    <option value="draft" {{ $project->status == 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="active" {{ $project->status == 'active' ? 'selected' : '' }}>Attivo</option>
+                                    <option value="ongoing" {{ $project->status == 'ongoing' ? 'selected' : '' }}>In corso</option>
+                                    <option value="draft" {{ $project->status == 'draft' ? 'selected' : '' }}>Archiviato</option>
                                 </select>
                             </div>
 
