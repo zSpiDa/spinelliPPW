@@ -95,4 +95,5 @@ Route::post('/projects/{project}/comments', [CommentsController::class, 'store']
 
 // Rotta per ELIMINARE un commento
 Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
+
 require __DIR__.'/auth.php';
