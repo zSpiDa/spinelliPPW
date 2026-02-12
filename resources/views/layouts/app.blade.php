@@ -9,7 +9,7 @@
 <body class="p-3">
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-3">
     <div class="container">
-        <span class="navbar-brand mb-0">UniLab</span>
+        <a href="/" class="navbar-brand mb-0"> <strong>UniLab</strong></a>
 
         @auth
         <div class="d-flex align-items-center gap-3">

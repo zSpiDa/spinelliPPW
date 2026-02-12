@@ -13,11 +13,9 @@
     @forelse ($projects as $p)
         <div class="card mb-3">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h3 class="h6 m-0">{{ $p->title }}</h3>
-                        <div class="text-muted small">Status: {{ $p->status ?? 'n/d' }}</div>
-                    </div>
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div><h3 class="h6 m-0">{{ $p->title }}</h3></div>
+                    <div class="text-muted small"><strong> Status:</strong> {{ $p->status ?? 'n/d' }}</div>
                 </div>
                 <div class="d-flex gap-2">
                     <a class="btn btn-sm btn-outline-primary"

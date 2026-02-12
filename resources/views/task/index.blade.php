@@ -22,8 +22,7 @@
                                     <th>Collegato a</th>
                                     <th>Assegnato a</th>
                                     <th>Modifica</th>
-                                    <th class="text-end">Azioni</th>
-                                </tr>
+                                    <th class="text-end">Elimina</th> </tr>
                                 </thead>
                                 <tbody>
                                 @forelse($tasks as $task)
@@ -40,17 +39,17 @@
                                         <td>
                                             @php
                                                 $statusBtnClass = match($task->status) {
-                                                    'done'        => 'btn-outline-success',
-                                                    'in_progress' => 'btn-outline-warning',
-                                                    'open'        => 'btn-outline-danger',
-                                                    default       => 'btn-outline-secondary'
+                                                    'done', 'completed' => 'btn-outline-success', // Verde
+                                                    'in_progress', 'ongoing' => 'btn-outline-warning', // Giallo
+                                                    'open', 'todo' => 'btn-outline-danger',  // Rosso
+                                                    default => 'btn-outline-secondary'
                                                 };
 
                                                 $statusLabel = match($task->status) {
-                                                    'done'        => 'Completato',
-                                                    'in_progress' => 'In Corso',
-                                                    'open'        => 'Da Fare',
-                                                    default       => $task->status
+                                                    'done', 'completed' => 'Completato',
+                                                    'in_progress', 'ongoing' => 'In Corso',
+                                                    'open', 'todo' => 'Da Fare',
+                                                    default => ucfirst($task->status)
                                                 };
                                             @endphp
                                             <span class="btn btn-sm {{ $statusBtnClass }} fw-bold disabled py-0 px-2"
@@ -62,17 +61,17 @@
                                         <td>
                                             @php
                                                 $prioBtnClass = match($task->priority) {
-                                                    'high'   => 'btn-outline-danger',
-                                                    'medium' => 'btn-outline-warning',
-                                                    'low'    => 'btn-outline-success',
-                                                    default  => 'btn-outline-secondary'
+                                                    'high' => 'btn-outline-danger',   // Rosso
+                                                    'medium' => 'btn-outline-warning',// Giallo
+                                                    'low' => 'btn-outline-success',   // Verde
+                                                    default => 'btn-outline-secondary'
                                                 };
 
                                                 $prioLabel = match($task->priority) {
-                                                    'high'   => 'Alta',
+                                                    'high' => 'Alta',
                                                     'medium' => 'Media',
-                                                    'low'    => 'Bassa',
-                                                    default  => 'N/D'
+                                                    'low' => 'Bassa',
+                                                    default => 'N/D'
                                                 };
                                             @endphp
                                             <span class="btn btn-sm {{ $prioBtnClass }} fw-bold disabled py-0 px-2"
@@ -104,16 +103,18 @@
 
                                         <td>
                                             <a href="{{ route('tasks.edit', $task) }}" class="btn btn-sm btn-warning">
-                                                ✏️ Modifica
+                                                Modifica
                                             </a>
                                         </td>
 
                                         <td class="text-end">
-                                            @if($task->project)
-                                                <a href="{{ route('projects.show', $task->project) }}" class="btn btn-sm btn-outline-secondary">
-                                                    Vedi nel Progetto
-                                                </a>
-                                            @endif
+                                            <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questa task?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    Elimina
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty

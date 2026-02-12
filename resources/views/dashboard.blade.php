@@ -20,7 +20,7 @@
         <div class="col-6 col-md-3">
             <div class="card text-center border-success">
                 <div class="card-body">
-                    <div class="fs-2 fw-bold text-success">{{ $tasks->count() }}</div>
+                    <div class="fs-2 fw-bold text-success">{{ $assignedTasksCount }}</div>
                     <div class="text-muted small">Task totali</div>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         <div class="col-6 col-md-3">
             <div class="card text-center border-warning">
                 <div class="card-body">
-                    <div class="fs-2 fw-bold text-warning">{{ $tasks->where('status', 'in_progress')->count() }}</div>
+                    <div class="fs-2 fw-bold text-warning">{{ $scheduledTasksCount }}</div>
                     <div class="text-muted small">Task in corso</div>
                 </div>
             </div>
@@ -69,26 +69,34 @@
         {{-- Task --}}
         <div class="col-12 col-md-6">
             <div class="card h-100">
-                <div class="card-header fw-semibold">I tuoi Task</div>
+                <div class="card-header fw-semibold">Task personali</div>
                 <div class="card-body p-0">
-                    @forelse($tasks->sortBy('due_date')->take(10) as $task)
+                    @forelse($myTasks as $task)
                         <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                             <div>
                                 <div class="fw-semibold">{{ $task->title }}</div>
-                                <small class="text-muted">{{ $task->project?->title ?? 'N/A' }}</small>
+                                <small class="text-muted">{{ $task->project?->title ?? 'Nessun Progetto' }}</small>
                             </div>
                             <div class="text-end">
+                                {{-- Badge Status --}}
                                 <span class="badge text-bg-{{ $task->status === 'completed' ? 'success' : ($task->status === 'in_progress' ? 'warning' : 'secondary') }}">
-                                    {{ ucfirst(str_replace('_', ' ', $task->status)) }}
-                                </span>
+                {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+            </span>
+
+                                {{-- Data Scadenza --}}
                                 @if($task->due_date)
-                                    <div class="small text-muted">{{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}</div>
+                                    <div class="small text-muted mt-1">
+                                        {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
                     @empty
-                        <div class="p-3 text-muted">Non hai task attivi.</div>
+                        <div class="alert alert-light text-center text-muted">
+                            Non hai task assegnate al momento.
+                        </div>
                     @endforelse
+
                 </div>
             </div>
         </div>
