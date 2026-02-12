@@ -11,13 +11,13 @@ class Task extends Model
 
     protected $fillable = [
         'project_id',
-        'milestone_id', // Aggiunto: serve per salvare il collegamento
-        'user_id',      // Modificato da assignee_id a user_id per standard (vedi nota sotto)
+        'milestone_id',
+        'assignee_id',  // <--- CORRETTO! (Prima era user_id)
         'title',
         'description',
         'due_date',
         'status',
-        'priority'
+        'priority'      // Assicurati che questo ci sia per la priorità
     ];
 
     // Relazione: Un task appartiene a un Progetto
@@ -26,16 +26,16 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
-    // Relazione: Un task può appartenere a una Milestone (QUELLA CHE MANCAVA)
+    // Relazione: Un task può appartenere a una Milestone
     public function milestone()
     {
         return $this->belongsTo(Milestone::class);
     }
 
     // Relazione: Un task è assegnato a un Utente
-    // Rinominata da 'assignee' a 'user' per compatibilità col Controller
     public function user()
     {
+        // Specifichiamo 'assignee_id' perché è il nome della colonna nel DB
         return $this->belongsTo(User::class, 'assignee_id');
     }
 }
