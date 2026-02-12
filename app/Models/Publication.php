@@ -9,7 +9,7 @@ class Publication extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','type','venue','doi','status','target_deadline'];
+    protected $fillable = ['title','type','venue','doi','status','target_deadline','year', 'author'];
 
     public function projects()   { return $this->belongsToMany(Project::class)->withTimestamps(); } //molti a molti
     public function authors()    { return $this->hasMany(Author::class); } //uno a molti

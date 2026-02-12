@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('password');
             $table->enum('role', ['pi', 'manager', 'researcher', 'collaborator'])->default('pi');
             $table->timestamps();
+            $table->foreignId('group_id')->nullable()->constrained('groups')->onDelete('set null');
         });
     }
     public function down(): void {

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\Group;
 
 class PageController extends Controller
 {
     public function home(){
+        $group = Group::with('users')->first();
         $projectCount = Project::count();
-        return view('home', ['projectCount' => $projectCount]);
+        return view('home', ['projectCount' => $projectCount, 'group' => $group]);
     }
 
     public function about()

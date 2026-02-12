@@ -64,6 +64,8 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'tags' => 'nullable|string',
             'tags.*' => 'string|max:50',
+            'milestones' => 'nullable|array',
+            'milestones.*' => 'string', // formato "titolo|data|status"
         ]);
 
         unset($validated['tags']); // Rimuove 'tags' perché non è un campo diretto di Project
@@ -91,18 +93,14 @@ class ProjectController extends Controller
             $project->tags()->sync($tagIds);
         }
         
-        // Parsing milestones da stringa "titolo|data, titolo|data"
+        // Parsing milestones da stringa "titolo|data|status, titolo|data|status"
         if ($request->filled('milestones')) {
-            $items = array_map('trim', explode(',', $request->milestones));
-            foreach ($items as $item) {
-                $parts = array_map('trim', explode('|', $item));
-                if (count($parts) >= 2) {
-                    $project->milestones()->create([
-                        'title'    => $parts[0],
-                        'due_date' => $parts[1],
-                        'status'   => 'pending',
-                    ]);
-                }
+            foreach ($request->milestones as $m) {
+                $project->milestones()->create([
+                    'title' => $m['title'] ?? 'Milestone senza titolo',
+                    'due_date' => $m['due_date'] ?? null,
+                    'status' => $m['status'] ?? 'planned',
+                ]);
             }
         }
 
@@ -112,11 +110,12 @@ class ProjectController extends Controller
             foreach ($items as $item) {
                 $parts = array_map('trim', explode('|', $item));
                 if (count($parts) >= 2) {
-                    $pub = Publication::create([
+                    $publication = Publication::create([
                         'title' => $parts[0],
-                        'year'  => (int) $parts[1],
+                        'status' => $parts[1],
+                        'author' => $parts[2] ?? null, // Opzionale: permette di specificare gli autori
                     ]);
-                    $project->publications()->attach($pub->id);
+                    $project->publications()->attach($publication->id);
                 }
             }
         }

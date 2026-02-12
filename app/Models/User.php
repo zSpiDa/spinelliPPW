@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'group_id'
     ];
 
     // Relazione necessaria per la dashboard e per accedere ai progetti dell'utente
@@ -50,4 +51,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function group() { return $this->belongsTo(Group::class, 'group_id'); } //molti a uno
 }
