@@ -7,17 +7,29 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="p-3">
-@include('profile.partials.navbar')
-<header class="mb-3 border-bottom pb-2 d-flex align-items-center justify-content-between">
-    <h1 class="h4 m-0">Gestionale IVU Lab</h1>
-    @auth
-    <nav class="d-flex gap-3">
-        <a href="/" class="link-primary">Home</a>
-        <a href="/projects" class="link-primary">Progetti</a>
-        <a href="/dashboard" class="link-primary">Dashboard</a>
-    </nav>
-    @endauth
-</header>
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-3">
+    <div class="container">
+        <span class="navbar-brand mb-0">UniLab</span>
+
+        @auth
+        <div class="d-flex align-items-center gap-3">
+            <a href="/" class="nav-link">Home</a>
+            <a href="{{ route('projects.index') }}" class="nav-link">Progetti</a>
+            <a href="{{ route('publications.index') }}" class="nav-link">Pubblicazioni</a>
+            <a href="{{ route('tasks.index') }}" class="nav-link">Tasks</a>
+            <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
+            
+            <span class="text-muted">|</span>
+            <h1 class="h6 m-0">Ciao, {{ Auth::user()->name }}</h1>
+            <a href="{{ route('logout') }}" class="btn btn-outline-secondary btn-sm"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+            </a>
+            <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-none">@csrf</form>
+        </div>
+        @endauth
+    </div>
+</nav>
 
 <main class="container py-3">
     @yield('content')
