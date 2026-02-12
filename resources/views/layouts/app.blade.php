@@ -9,7 +9,7 @@
 <body class="p-3">
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-3">
     <div class="container">
-        <span class="navbar-brand mb-0">UniLab</span>
+        <a href="/" class="navbar-brand mb-0"> <strong>UniLab</strong></a>
 
         @auth
         <div class="d-flex align-items-center gap-3">
@@ -18,7 +18,7 @@
             <a href="{{ route('publications.index') }}" class="nav-link">Pubblicazioni</a>
             <a href="{{ route('tasks.index') }}" class="nav-link">Tasks</a>
             <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
-            
+
             <span class="text-muted">|</span>
             <h1 class="h6 m-0">Ciao, {{ Auth::user()->name }}</h1>
             <a href="{{ route('logout') }}" class="btn btn-outline-secondary btn-sm"

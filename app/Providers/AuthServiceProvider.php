@@ -24,7 +24,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('delete-project', function (User $user, Project $project) {
-            return in_array($user->role, ['admin','pi'], true);
+            return in_array($user->role, ['manager','pi'], true);
         });
     }
 }

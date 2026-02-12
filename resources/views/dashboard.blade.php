@@ -20,7 +20,7 @@
         <div class="col-6 col-md-3">
             <div class="card text-center border-success">
                 <div class="card-body">
-                    <div class="h2 mb-0 text-primary">{{ $assignedTasksCount }}</div>
+                    <div class="fs-2 fw-bold text-success">{{ $assignedTasksCount }}</div>
                     <div class="text-muted small">Task totali</div>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         <div class="col-6 col-md-3">
             <div class="card text-center border-warning">
                 <div class="card-body">
-                    <div class="h2 mb-0 text-warning">{{ $scheduledTasksCount }}</div>
+                    <div class="fs-2 fw-bold text-warning">{{ $scheduledTasksCount }}</div>
                     <div class="text-muted small">Task in corso</div>
                 </div>
             </div>
@@ -71,12 +71,10 @@
             <div class="card h-100">
                 <div class="card-header fw-semibold">Task personali</div>
                 <div class="card-body p-0">
-                    {{-- Filtriamo per 'user_id' uguale all'id dell'utente loggato --}}
                     @forelse($myTasks as $task)
                         <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                             <div>
                                 <div class="fw-semibold">{{ $task->title }}</div>
-                                {{-- Usiamo l'operatore null-safe (?) in caso il progetto sia stato cancellato --}}
                                 <small class="text-muted">{{ $task->project?->title ?? 'Nessun Progetto' }}</small>
                             </div>
                             <div class="text-end">
