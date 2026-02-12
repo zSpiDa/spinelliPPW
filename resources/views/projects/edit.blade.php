@@ -94,7 +94,7 @@
 
                 <div class="card mb-4">
                     <div class="card-header fw-bold">
-                        👥 Gestione Membri del Team
+                        Gestione Membri del Team
                     </div>
                     <div class="card-body">
 

@@ -36,7 +36,7 @@
 
                 <div class="d-flex gap-2">
                     <a href="{{ route('projects.edit', $project) }}" class="btn btn-warning btn-sm fw-bold">
-                        Modifica
+                        ✏️ Modifica & Team
                     </a>
                 </div>
             </div>
@@ -47,7 +47,7 @@
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-header bg-white fw-bold">
-                    Milestone ({{ $project->milestones->count() }})
+                    🎯 Milestone ({{ $project->milestones->count() }})
                 </div>
                 <div class="card-body">
                     @forelse($project->milestones as $m)
@@ -70,7 +70,7 @@
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-header bg-white fw-bold">
-                    Pubblicazioni ({{ $project->publications->count() }})
+                    📚 Pubblicazioni ({{ $project->publications->count() }})
                 </div>
                 <div class="card-body">
                     @forelse($project->publications as $pb)
@@ -89,7 +89,7 @@
     <div class="row g-4 mb-4">
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm border-0">
-                <div class="card-header bg-white fw-bold">Allegati</div>
+                <div class="card-header bg-white fw-bold">📎 Allegati</div>
                 <div class="card-body">
                     @forelse($project->attachments as $a)
                         <div class="d-flex justify-content-between align-items-center border-bottom py-2">
@@ -110,7 +110,7 @@
 
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm border-0">
-                <div class="card-header bg-white fw-bold">Commenti</div>
+                <div class="card-header bg-white fw-bold">💬 Commenti</div>
                 <div class="card-body">
                     <form action="{{ route('projects.comments.store', $project->id) }}" method="POST" class="mb-3">
                         @csrf
@@ -138,9 +138,92 @@
         </div>
     </div>
 
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+            <span>✅ Task del Progetto ({{ $project->tasks->count() }})</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Stato</th>
+                        <th>Priorità</th>
+                        <th>Assegnato a</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($project->tasks as $task)
+                        <tr>
+                            <td>
+                                <div class="fw-bold">{{ $task->title }}</div>
+                                @if($task->due_date)
+                                    <small class="text-muted">Scadenza: {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}</small>
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $statusBtnClass = match($task->status) {
+                                        'done', 'completed' => 'btn-outline-success', // Verde
+                                        'in_progress', 'ongoing' => 'btn-outline-warning', // Giallo
+                                        'open', 'todo' => 'btn-outline-danger',  // Rosso
+                                        default => 'btn-outline-secondary'
+                                    };
+                                    $statusLabel = match($task->status) {
+                                        'done', 'completed' => 'Completato',
+                                        'in_progress', 'ongoing' => 'In Corso',
+                                        'open', 'todo' => 'Da Fare',
+                                        default => ucfirst($task->status)
+                                    };
+                                @endphp
+                                <span class="btn btn-sm {{ $statusBtnClass }} fw-bold disabled py-0 px-2" style="opacity: 1; font-size: 0.75rem;">
+                                        {{ $statusLabel }}
+                                    </span>
+                            </td>
+                            <td>
+                                @php
+                                    $prioBtnClass = match($task->priority) {
+                                        'high' => 'btn-outline-danger',   // Rosso
+                                        'medium' => 'btn-outline-warning',// Giallo
+                                        'low' => 'btn-outline-success',   // Verde
+                                        default => 'btn-outline-secondary'
+                                    };
+                                    $prioLabel = match($task->priority) {
+                                        'high' => 'Alta',
+                                        'medium' => 'Media',
+                                        'low' => 'Bassa',
+                                        default => 'N/D'
+                                    };
+                                @endphp
+                                <span class="btn btn-sm {{ $prioBtnClass }} fw-bold disabled py-0 px-2" style="opacity: 1; font-size: 0.75rem;">
+                                        {{ $prioLabel }}
+                                    </span>
+                            </td>
+                            <td>
+                                @if($task->user)
+                                    <span class="badge bg-info text-dark">{{ $task->user->name }}</span>
+                                @else
+                                    <span class="text-muted small fst-italic">-- Nessuno --</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-3 text-muted fst-italic">
+                                Nessuna task associata a questo progetto.
+                            </td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="card mb-5 shadow-sm border-0">
         <div class="card-header bg-white fw-bold">
-            Membri del Team
+            👥 Membri del Team
         </div>
         <div class="card-body">
             @forelse($project->users as $u)
