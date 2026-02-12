@@ -90,5 +90,9 @@ Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
     Route::post('/groups/sync-members', [App\Http\Controllers\GroupController::class, 'syncMembers'])->name('groups.syncMembers');
 });
 
+// Rotta per SALVARE un commento (collegato al progetto)
+Route::post('/projects/{project}/comments', [CommentsController::class, 'store'])->name('projects.comments.store');
 
+// Rotta per ELIMINARE un commento
+Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
 require __DIR__.'/auth.php';
