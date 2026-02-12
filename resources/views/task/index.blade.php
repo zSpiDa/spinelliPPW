@@ -20,6 +20,7 @@
                                     <th>Stato</th>
                                     <th>Collegato a</th>
                                     <th>Assegnato a</th>
+                                    <th></th>
                                     <th class="text-end">Azioni</th>
                                 </tr>
                                 </thead>
@@ -73,6 +74,12 @@
                                             @endif
                                         </td>
 
+                                        <td>
+                                            <a href="{{ route('tasks.edit', $task) }}" class="btn btn-sm btn-warning">
+                                                ✏️ Modifica
+                                            </a>
+                                        </td>
+
                                         <td class="text-end">
                                             <a href="{{ route('projects.show', $task->project) }}" class="btn btn-sm btn-outline-secondary">
                                                 Vedi nel Progetto
@@ -81,7 +88,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">
+                                        <td colspan="6" class="text-center py-4 text-muted">
                                             Nessuna attività trovata.
                                         </td>
                                     </tr>

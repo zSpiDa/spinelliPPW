@@ -16,69 +16,68 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('/', [PageController::class, 'home']);
 
+// --- ROTTE PROFILO UTENTE (Standard) ---
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('tasks', TaskController::class);
 });
 
-// ----------------------------------------------------------------------
-// 1. PRIMA LE ROTTE SPECIFICHE (Admin, PI, Manager)
-// Devono stare qui in alto, altrimenti "create" viene scambiato per un ID
-// ----------------------------------------------------------------------
+// ======================================================================
+//  ZONA PROTETTA (Admin, PI, Manager)
+//  Qui ci sono le azioni di SCRITTURA (Create, Edit, Update, Delete)
+// ======================================================================
 Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
+
+    // --- PROGETTI (Gestione Completa) ---
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
-    // Altre rotte protette da ruolo
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-
+    // Gestione Membri Progetto
     Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.addMember');
     Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
     Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])->name('projects.sync');
+
+    // --- TASKS (Solo Modifica ed Eliminazione) ---
+    // Nota: La creazione (store) è lasciata sotto per tutti, o puoi spostarla qui se vuoi.
+    Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+    // --- MILESTONES (Gestione Completa) ---
+    Route::post('/projects/{project}/milestones', [MilestoneController::class, 'store'])->name('projects.milestones.store');
+    Route::get('/milestones/{milestone}/edit', [MilestoneController::class, 'edit'])->name('milestones.edit');
+    Route::put('/milestones/{milestone}', [MilestoneController::class, 'update'])->name('milestones.update');
+    Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy'])->name('milestones.destroy');
+
+    // --- UTENTI (Gestione) ---
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
 });
 
-// ----------------------------------------------------------------------
-// 2. POI LE ROTTE GENERICHE (Auth standard)
-// Qui c'è la resource che contiene 'show' (/projects/{id})
-// ----------------------------------------------------------------------
+// ======================================================================
+//  ZONA GENERICA (Autenticati)
+//  Qui ci sono le azioni di LETTURA (Index, Show) accessibili a tutti
+// ======================================================================
 Route::middleware(['auth'])->group(function () {
-    // Nota: except store/create/destroy perché sono gestite sopra
-    Route::resource('projects', ProjectController::class)->except(['store', 'create', 'destroy']);
-    Route::resource('publications', PublicationController::class);
-    Route::resource('tasks', TaskController::class);
-    Route::get('/projects/json', [ProjectController::class, 'index']);
 
+    // Progetti: Tutti possono vedere, ma le azioni di modifica sono escluse qui (perché gestite sopra)
+    Route::resource('projects', ProjectController::class)
+        ->except(['create', 'store', 'edit', 'update', 'destroy']);
+
+    // Tasks: Tutti possono vedere e creare, ma non modificare/cancellare (gestito sopra)
+    Route::resource('tasks', TaskController::class)
+        ->except(['edit', 'update', 'destroy']);
+
+    // Pubblicazioni (Accesso completo per ora, restringi se necessario)
+    Route::resource('publications', PublicationController::class);
+
+    // Altre rotte di lettura
+    Route::get('/projects/json', [ProjectController::class, 'index']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/users/edit', [UserController::class, 'edit'])->name('users.edit');
 });
-
-// Rotta per CREARE una milestone (collegata al progetto)
-Route::post('/projects/{project}/milestones', [MilestoneController::class, 'store'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
-    ->name('projects.milestones.store');
-
-// Rotta per AGGIORNARE una milestone
-Route::put('/milestones/{milestone}', [MilestoneController::class, 'update'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
-    ->name('milestones.update');
-
-Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneController::class, 'edit'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
-    ->name('milestones.edit');
-
-// Rotta per ELIMINARE una milestone
-Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
-    ->name('milestones.destroy');
-
-//Rotta middleware per evitare che researcher modifichi progetto
-Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
-    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
-});
-
 
 require __DIR__.'/auth.php';
