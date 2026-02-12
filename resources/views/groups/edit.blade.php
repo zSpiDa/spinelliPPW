@@ -20,12 +20,21 @@
                 <label for="description" class="form-label">Descrizione</label>
                 <textarea name="description" id="description" class="form-control">{{ $group->description }}</textarea>
             </div>
-            <div class="card">
-            <div class="card-body">
-                <h2 class="h5">Membri del Gruppo ({{ $memberCount }})</h2>
-                <ul class="list-group mb-3">
+            <div class="mb-3">
+                <
+                <h5>Membri del Gruppo ({{ $memberCount }})</h5>
+                <!-- Rimozione membri dal gruppo con tasto accanto al nome -->
+                <ul class="list-group">
                     @foreach($group->users as $user)
-                        <li class="list-group-item">{{ $user->name }} ({{ $user->email }})</li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ $user->name }} ({{ $user->email }})
+                            <form action="{{ route('groups.removeMember', $user->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Rimuovi</button>
+                            </form>
+                        </li>
                     @endforeach
                 </ul>
             </div>
