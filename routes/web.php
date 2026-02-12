@@ -21,17 +21,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('tasks', TaskController::class);
 });
 
 // ----------------------------------------------------------------------
-// 1. PRIMA LE ROTTE SPECIFICHE (Admin, PI, Manager)
+// 1. PRIMA LE ROTTE SPECIFICHE (PI, Manager)
 // Devono stare qui in alto, altrimenti "create" viene scambiato per un ID
 // ----------------------------------------------------------------------
-Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
+Route::middleware(['auth', 'role:pi,manager'])->group(function () {
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    // Rotte Pubblicazioni (Protette)
+    Route::resource('publications', PublicationController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
 
     // Altre rotte protette da ruolo
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -58,25 +60,25 @@ Route::middleware(['auth'])->group(function () {
 
 // Rotta per CREARE una milestone (collegata al progetto)
 Route::post('/projects/{project}/milestones', [MilestoneController::class, 'store'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
+    ->middleware(['auth', 'role:pi,manager'])
     ->name('projects.milestones.store');
 
 // Rotta per AGGIORNARE una milestone
 Route::put('/milestones/{milestone}', [MilestoneController::class, 'update'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
+    ->middleware(['auth', 'role:pi,manager'])
     ->name('milestones.update');
 
 Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneController::class, 'edit'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
+    ->middleware(['auth', 'role:pi,manager'])
     ->name('milestones.edit');
 
 // Rotta per ELIMINARE una milestone
 Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy'])
-    ->middleware(['auth', 'role:admin,pi,manager'])
+    ->middleware(['auth', 'role:pi,manager'])
     ->name('milestones.destroy');
 
 //Rotta middleware per evitare che researcher modifichi progetto
-Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
+Route::middleware(['auth', 'role:pi,manager'])->group(function () {
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 });
