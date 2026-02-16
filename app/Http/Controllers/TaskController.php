@@ -25,6 +25,7 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -36,7 +37,6 @@ class TaskController extends Controller
             'assignee_id' => 'nullable|exists:users,id',
             'project_id'  => 'nullable|exists:projects,id',
         ]);
-
         // Crea la Task
         Task::create($validated);
 

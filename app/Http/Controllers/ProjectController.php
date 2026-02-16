@@ -11,6 +11,7 @@ use App\Models\Publication;
 use App\Models\Attachment;
 use App\Models\Comment; // Se lo usi
 use Illuminate\Support\Facades\Storage;
+use App\Models\Task; // Se vuoi creare task direttamente da qui
 
 class ProjectController extends Controller
 {
@@ -92,6 +93,7 @@ class ProjectController extends Controller
             'tags'         => 'nullable|string',
             'milestones'   => 'nullable|array',
             'publications' => 'nullable|string',
+            'tasks'        => 'nullable|array',
         ]);
 
         // Rimuoviamo i campi che non vanno direttamente nella tabella projects
@@ -100,7 +102,7 @@ class ProjectController extends Controller
         unset($validated['file']);
         unset($validated['milestones']);
         unset($validated['publications']);
-
+        unset($validated['tasks']);
         // 1. Crea il Progetto
         $project = Project::create($validated);
 
@@ -184,6 +186,7 @@ class ProjectController extends Controller
             'tags'        => 'nullable|string', // Stringa separata da virgola
             'milestones'   => 'nullable|array',
             'file'        => 'nullable|mimes:pdf|max:20480', // max 20MB
+            'tasks'        => 'nullable|array',
         ]);
 
         // Salviamo i tag in una variabile a parte
@@ -278,6 +281,37 @@ class ProjectController extends Controller
             $attachment->delete();
         }
     }
+    }
+    
+    //rimozione e aggiunta tags
+    if ($tagsInput !== null) {
+        $tagNames = array_map('trim', explode(',', $tagsInput));
+        $tagIds = [];
+        foreach ($tagNames as $name) {
+            if(!empty($name)) {
+                $tag = Tag::firstOrCreate(['name' => $name]);
+                $tagIds[] = $tag->id;
+            }
+        }
+        // Sync aggiorna le relazioni: rimuove quelle vecchie non presenti e aggiunge le nuove
+        $project->tags()->sync($tagIds);
+    }
+    
+    unset($validated['tasks']);
+    //Aggiunta tasks
+    if ($request->has('tasks')) {
+        foreach ($request->tasks as $t) {
+            // Assicurati che $t sia un array con le chiavi giuste
+            if(is_array($t)) {
+                $project->tasks()->create([
+                    'title'       => $t['title'] ?? 'Task',
+                    'description' => $t['description'] ?? null,
+                    'due_date'    => $t['due_date'] ?? null,
+                    'status'      => $t['status'] ?? 'open',
+                    'priority'    => $t['priority'] ?? 'medium',
+                ]);
+            }
+        }
     }
 
     return redirect()->route('projects.show', $project)

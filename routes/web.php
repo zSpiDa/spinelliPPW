@@ -98,4 +98,15 @@ Route::post('/projects/{project}/comments', [CommentsController::class, 'store']
 // Rotta per ELIMINARE un commento
 Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
 
+//Rotta per AGGIUNGERE TASKS (collegati al progetto)
+Route::post('/projects/{project}/tasks', [TaskController::class, 'store'])->name('projects.tasks.store')->middleware(['auth', 'role:pi,manager']);
+
+//Rotta per AGGIORNARE TASKS
+Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update')->middleware(['auth', 'role:pi,manager']);
+
+//Rotta per ELIMINARE TASKS
+Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy')->middleware(['auth', 'role:pi,manager']);
+
+
+
 require __DIR__.'/auth.php';

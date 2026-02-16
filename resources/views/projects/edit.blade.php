@@ -153,6 +153,69 @@
                     <input type="file" name="file" id="file" class="form-control" accept=".pdf">
                 </div>
             </div>
+            <!-- Sezione per la creazione rapida di task associati al progetto -->
+             <div class="card mb-5">
+                    <div class="card-header fw-bold">
+                        Crea Nuova Task
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('tasks.store') }}">
+                            @csrf
+                            <input type="hidden" name="project_id" value="{{ $project->id }}">
+
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Titolo Task</label>
+                                    <input type="text" name="title" class="form-control" placeholder="Es: Analisi dati preliminari..." required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Assegna a</label>
+                                    <select name="assignee_id" class="form-select">
+                                        <option value="">-- Nessuno --</option>
+                                        @foreach($users as $u)
+                                            <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Stato</label>
+                                    <select name="status" class="form-select">
+                                        <option value="open" selected>Da Fare</option>
+                                        <option value="in_progress">In Corso</option>
+                                        <option value="done">Completato</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Priorità</label>
+                                    <select name="priority" class="form-select">
+                                        <option value="low">Bassa</option>
+                                        <option value="medium" selected>Media</option>
+                                        <option value="high">Alta</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Scadenza</label>
+                                    <input type="date" name="due_date" class="form-control">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Descrizione (opzionale)</label>
+                                    <textarea name="description" class="form-control" rows="2" placeholder="Dettagli aggiuntivi..."></textarea>
+                                </div>
+
+                                <div class="col-md-12 text-end mt-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-lg"></i> Crea Task
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             
             <button type="submit" class="btn btn-primary">Salva Modifiche</button>
         </form>
