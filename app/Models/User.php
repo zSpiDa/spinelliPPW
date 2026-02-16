@@ -53,4 +53,9 @@ class User extends Authenticatable
     ];
 
     public function group() { return $this->belongsTo(Group::class, 'group_id'); } //molti a uno
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'assignee_id');
+    }
 }

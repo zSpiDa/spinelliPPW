@@ -79,9 +79,23 @@
                             </div>
                             <div class="text-end">
                                 {{-- Badge Status --}}
-                                <span class="badge text-bg-{{ $task->status === 'completed' ? 'success' : ($task->status === 'in_progress' ? 'warning' : 'secondary') }}">
-                {{ ucfirst(str_replace('_', ' ', $task->status)) }}
-            </span>
+                                    @php
+                                    $statusBadgeClass = match($task->status) {
+                                        'done'        => 'bg-success',
+                                        'in_progress' => 'bg-warning text-dark',
+                                        'open'        => 'bg-danger',
+                                        default       => 'bg-secondary'
+                                    };
+                                    $statusLabel = match($task->status) {
+                                        'done'        => 'Completata',
+                                        'in_progress' => 'In Corso',
+                                        'open'        => 'Da Fare',
+                                        default       => ucfirst($task->status)
+                                    };
+                                @endphp
+                                <span class="badge {{ $statusBadgeClass }}">
+                                    {{ $statusLabel }}
+                                </span>
 
                                 {{-- Data Scadenza --}}
                                 @if($task->due_date)
