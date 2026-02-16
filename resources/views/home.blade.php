@@ -5,7 +5,7 @@
     <div class="container">
         @guest
             <div class="text-center py-5">
-                <h1 class="display-4">Benvenuto su IVU Lab</h1>
+                <h1 class="display-4">Benvenuto su UniLab</h1>
                 <p class="lead">Il tuo gestionale per la gestione dei progetti di ricerca.</p>
                 <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Accedi</a>
                 <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg">Registrati</a>

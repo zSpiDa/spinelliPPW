@@ -17,6 +17,7 @@ class MilestoneController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'due_date' => 'nullable|date',
+            'status' => 'nullable|in:planned,ongoing,completed', // Se vuoi permettere di specificare lo status al momento della creazione
             // Se non passi lo status, di default mettiamo 'planned' nel database o nel model
         ]);
 
@@ -24,7 +25,7 @@ class MilestoneController extends Controller
         $project->milestones()->create([
             'title' => $validated['title'],
             'due_date' => $validated['due_date'],
-            'status' => 'planned', // Impostiamo lo stato iniziale di default
+            'status' => $validated['status'] ?? 'planned', // Impostiamo lo stato iniziale di default se non fornito
         ]);
 
         // 3. Ritorno alla pagina precedente

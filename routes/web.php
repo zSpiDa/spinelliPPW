@@ -73,9 +73,9 @@ Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneContro
     ->name('milestones.edit');
 
 // Rotta per ELIMINARE una milestone
-Route::delete('/milestones/{milestone}', [MilestoneController::class, 'destroy'])
+Route::delete('/milestones/{milestone}', [MilestoneController::class, 'delete'])
     ->middleware(['auth', 'role:pi,manager'])
-    ->name('milestones.destroy');
+    ->name('milestones.delete');
 
 //Rotta middleware per evitare che researcher modifichi progetto
 Route::middleware(['auth', 'role:pi,manager'])->group(function () {

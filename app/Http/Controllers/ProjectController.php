@@ -16,9 +16,10 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with(['milestones', 'tags', 'publications'])
+        $projects = Project::with(['milestones', 'tags', 'publications', 'users'])
             ->orderBy('title')
             ->get();
+        
 
         return view('projects.index', ['projects' => $projects]);
     }
@@ -181,6 +182,8 @@ class ProjectController extends Controller
             'end_date'    => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string',
             'tags'        => 'nullable|string', // Stringa separata da virgola
+            'milestones'   => 'nullable|array',
+            'file'        => 'nullable|mimes:pdf|max:20480', // max 20MB
         ]);
 
         // Salviamo i tag in una variabile a parte
@@ -210,9 +213,77 @@ class ProjectController extends Controller
             // $project->tags()->detach();
         }
 
-        return redirect()->route('projects.show', $project)
+        // Recuperiamo gli ID delle milestone presenti nel form
+        $sentIds = collect($request->input('milestones', []))
+            ->pluck('id')
+            ->filter() // Filtra valori null/vuoti (che appartengono alle nuove milestone)
+            ->toArray();
+
+        // Eliminiamo dal DB tutte le milestone di questo progetto che NON sono nella lista inviata
+        $project->milestones()
+            ->whereNotIn('id', $sentIds)
+            ->delete();
+
+        // 2. GESTIONE AGGIORNAMENTO E CREAZIONE
+        if ($request->has('milestones')) {
+            foreach ($request->milestones as $m) {
+                if (isset($m['id']) && $m['id']) {
+            // AGGIORNAMENTO: Cerchiamo la milestone SOLO all'interno di questo progetto per sicurezza
+            $milestone = $project->milestones()->find($m['id']);
+            
+            if ($milestone) {
+                $milestone->update([
+                    'title'    => $m['title'],
+                    'due_date' => $m['due_date'],
+                    'status'   => $m['status'],
+                ]);
+            }
+        } else {
+            // CREAZIONE: Se non c'è ID, è una nuova milestone
+            $project->milestones()->create([
+                'title'    => $m['title'],
+                'due_date' => $m['due_date'],
+                'status'   => $m['status'] ?? 'planned',
+            ]);
+        }
+    }
+    // 3. Gestione molteplici file (se vuoi permettere di aggiungere nuovi allegati durante l'update) ed anche rimozione dei file esistenti
+    if ($request->hasFile('file')) {
+        $path = $request->file('file')->store('projects', 'public');
+
+        $project->attachments()->create([
+            'path' => $path,
+            'name' => $request->file('file')->getClientOriginalName(),
+            'uploaded_by' => auth()->id(),
+        ]);
+    }
+    else {
+        // Se vuoi permettere la rimozione degli allegati esistenti, potresti aggiungere un campo checkbox per ogni allegato nella vista edit.blade.php
+        // e qui controllare se è stato richiesto di eliminare qualche file
+        // Esempio (assumendo che tu abbia un array di ID degli allegati da eliminare):
+        if ($request->filled('delete_attachments')) {
+        // Recuperiamo gli ID inviati dal form
+        $idsToDelete = $request->input('delete_attachments');
+        
+        // Cerchiamo SOLO tra gli allegati di QUESTO progetto (Sicurezza)
+        $attachmentsToDelete = $project->attachments()->whereIn('id', $idsToDelete)->get();
+
+        foreach ($attachmentsToDelete as $attachment) {
+            // 1. Elimina il file fisico dallo storage
+            if (Storage::disk('public')->exists($attachment->path)) {
+                Storage::disk('public')->delete($attachment->path);
+            }
+            
+            // 2. Elimina il record dal database
+            $attachment->delete();
+        }
+    }
+    }
+
+    return redirect()->route('projects.show', $project)
             ->with('success', 'Progetto aggiornato correttamente.');
     }
+}
 
     public function destroy(Project $project)
     {

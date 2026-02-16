@@ -16,6 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name');
             $table->text('description')->nullable();
+            // Un gruppo ha un progetto associato (opzionale)
+            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('set null');
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('group');
+        Schema::dropIfExists('groups');
     }
 };

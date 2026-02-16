@@ -13,6 +13,8 @@ return new class extends Migration {
             $table->enum('role', ['pi', 'manager', 'researcher', 'collaborator'])->default('pi');
             $table->timestamps();
             $table->foreignId('group_id')->nullable()->constrained('groups')->onDelete('set null');
+            // Un utente può essere associato a più progetti (molti a molti)
+            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('set null');
         });
     }
     public function down(): void {
