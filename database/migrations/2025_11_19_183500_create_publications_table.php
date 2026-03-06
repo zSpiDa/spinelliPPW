@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->string('type')->nullable();
             $table->string('venue')->nullable();
             $table->string('doi')->nullable();
-            $table->string('status')->nullable();
+            $table->string('status')->default('pending');
             $table->date('target_deadline')->nullable();
             $table->timestamps();
         });

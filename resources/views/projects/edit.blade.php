@@ -25,9 +25,9 @@
                 <label for="status" class="form-label">Stato</label>
                 <select name="status" id="status" class="form-select">
                     <option value="">Seleziona stato</option>
-                    <option value="planned" {{ $project->status === 'planned' ? 'selected' : '' }}>Planned</option>
+                    <option value="active" {{ $project->status === 'active' ? 'selected' : '' }}>Active</option>
                     <option value="ongoing" {{ $project->status === 'ongoing' ? 'selected' : '' }}>Ongoing</option>
-                    <option value="completed" {{ $project->status === 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="draft" {{ $project->status === 'draft' ? 'selected' : '' }}>Draft</option>
                 </select>
             </div>
             <div class="mb-3">
@@ -149,10 +149,10 @@
                 @endif
                 <div class="mb-2">
                     <label for="file" class="form-label">Aggiungi nuovo allegato (PDF)</label>
-                    {{-- Nota: Se vuoi caricare più file insieme aggiungi 'multiple' e cambia il nome in 'files[]' --}}
                     <input type="file" name="file" id="file" class="form-control" accept=".pdf">
                 </div>
             </div>
+        </form>
             <!-- Sezione per la creazione rapida di task associati al progetto -->
              <div class="card mb-5">
                     <div class="card-header fw-bold">
@@ -216,8 +216,112 @@
                         </form>
                     </div>
                 </div>
-            
-            <button type="submit" class="btn btn-primary">Salva Modifiche</button>
         </form>
+        <div class="mb-3">
+            <!-- sezione per visualizzare le task associate al progetto con possibilità di modificare lo stato direttamente -->
+            <h5>Task Associate al Progetto</h5>
+            @if($project->tasks->count() > 0)
+                <ul class="list-group">
+                    @foreach($project->tasks as $task)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ $task->title }}</strong><br>
+                                <small class="text-muted">{{ $task->assignee?->name ?? 'Non assegnato' }}</small>
+                            </div>
+                            <div>
+                                <form method="POST" action="{{ route('tasks.update', $task) }}" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="title" value="{{ $task->title }}">
+                                    <input type="hidden" name="description" value="{{ $task->description }}">
+                                    <input type="hidden" name="due_date" value="{{ $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('Y-m-d') : '' }}">
+                                    <input type="hidden" name="priority" value="{{ $task->priority }}">
+                                    <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                        <option value="open" {{ $task->status == 'open' ? 'selected' : '' }}>Da Fare</option>
+                                        <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>In Corso</option>
+                                        <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Completato</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div>
+                                <!-- Rimuovi Task -->
+                                <form method="POST" action="{{ route('tasks.destroy', $task) }}" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questa task?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-muted">Nessuna task associata a questo progetto.</p>
+            @endif
+        </div>
+        <div class="mb-3">
+            <!-- Sezione per vedere i membri associati con rimozione ed aggiunta di membri al progetto -->
+            <h5>Membri del Progetto</h5>
+            @if($project->users->count() > 0)
+                <ul class="list-group mb-3">
+                    @foreach($project->users as $user)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ $user->name }}
+                            <form method="POST" action="{{ route('projects.removeMember', [$project, $user]) }}" class="d-inline" onsubmit="return confirm('Rimuovere {{ $user->name }} dal progetto?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Rimuovi</button>
+                            </form>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-muted">Nessun membro associato a questo progetto.</p>
+            @endif
+            <!-- Form per aggiungere nuovi membri al progetto -->
+            <form method="POST" action="{{ route('projects.addMember', $project) }}">
+                @csrf
+                <div class="input-group">
+                    <select name="user_id" class="form-select">
+                        <option value="">-- Seleziona utente da aggiungere --</option>
+                        @foreach($users as $u)
+                            @if(!$project->users->contains($u))
+                                <option value="{{ $u->id }}">{{ $u->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn btn-primary">Aggiungi Membro</button>
+                </div>
+            </form>
+        </div>
+        <div class="mb-3">
+            <h5>Tag</h5>
+            @if($project->tags->count() > 0)
+                <div>
+                    @foreach($project->tags as $tag)
+                        <span class="badge bg-secondary">{{ $tag->name }}</span>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-muted">Nessun tag associato a questo progetto.</p>
+            @endif
+        </div>
+        <div class="mb-3">
+            <h5>Pubblicazioni</h5>
+            @if($project->publications->count() > 0)
+                <ul class="list-group">
+                    @foreach($project->publications as $pub)
+                        <li class="list-group-item">
+                            <strong>{{ $pub->title }}</strong><br>
+                            <small class="text-muted">Autori: {{ $pub->authors->pluck('name')->join(', ') }}</small>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-muted">Nessuna pubblicazione associata a questo progetto.</p>
+            @endif
+        </div>
+        <button type="submit" class="btn btn-primary">Salva Modifiche</button>
     </div>
 @endsection

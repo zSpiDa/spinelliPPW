@@ -11,7 +11,6 @@ use App\Models\Publication;
 use App\Models\Attachment;
 use App\Models\Comment; // Se lo usi
 use Illuminate\Support\Facades\Storage;
-use App\Models\Task; // Se vuoi creare task direttamente da qui
 
 class ProjectController extends Controller
 {
@@ -31,7 +30,7 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         // Carica le relazioni necessarie
-        $project->load(['milestones', 'publications.authors', 'tags', 'attachments', 'comments.user', 'users']);
+        $project->load(['milestones', 'publications.authors', 'tags', 'attachments', 'comments.user', 'users', 'tasks']);
 
         // Recupera TUTTI gli utenti ordinati per nome (per il menu a tendina)
         $users = User::orderBy('name')->get();
@@ -167,6 +166,12 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        // Manager può modificare solo i progetti di cui fa parte
+        $user = auth()->user();
+        if ($user->role === 'manager' && !$project->users->contains($user->id)) {
+            abort(403, 'Non puoi modificare un progetto di cui non fai parte.');
+        }
+
         // Recuperiamo gli utenti per popolare la select nella pagina di modifica
         $users = User::orderBy('name')->get();
 
@@ -175,6 +180,12 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
+        // Manager può aggiornare solo i progetti di cui fa parte
+        $user = auth()->user();
+        if ($user->role === 'manager' && !$project->users->contains($user->id)) {
+            abort(403, 'Non puoi modificare un progetto di cui non fai parte.');
+        }
+
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'status'      => 'nullable|string|max:100',
@@ -321,6 +332,12 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        // Manager può eliminare solo i progetti di cui fa parte
+        $user = auth()->user();
+        if ($user->role === 'manager' && !$project->users->contains($user->id)) {
+            abort(403, 'Non puoi eliminare un progetto di cui non fai parte.');
+        }
+
         // Opzionale: Elimina allegati fisici se necessario
         foreach($project->attachments as $attachment) {
             Storage::disk('public')->delete($attachment->path);

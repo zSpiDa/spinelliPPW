@@ -138,6 +138,7 @@
         </div>
     </div>
 
+    <!-- Sezione Task con visualizzazione tabellare -->
     <div class="card mb-4 shadow-sm border-0">
         <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
             <span>Task del Progetto ({{ $project->tasks->count() }})</span>

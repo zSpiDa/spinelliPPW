@@ -83,6 +83,10 @@ Route::middleware(['auth', 'role:pi,manager'])->group(function () {
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 });
 
+//Route per evitare che ruolo manager modifichi progetto ed elimini progetto di altri
+
+
+
 //Rotta per il gruppo di ricerca con middleware
 Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
     Route::get('/groups', [App\Http\Controllers\GroupController::class, 'edit'])->name('groups.edit');
@@ -107,6 +111,12 @@ Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.upda
 //Rotta per ELIMINARE TASKS
 Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy')->middleware(['auth', 'role:pi,manager']);
 
+//Rotta per aggiungere o rimuovere un membro al progetto (collegato al progetto)
+Route::middleware(['auth', 'role:pi,manager'])->group(function () {
+    Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.addMember');
+    Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
+    Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])->name('projects.sync');
+});
 
 
 require __DIR__.'/auth.php';

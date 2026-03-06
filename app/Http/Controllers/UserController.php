@@ -29,7 +29,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email,'.$user->id],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:PI,Manager,Researcher,Collaborator'],
+            'role' => ['required', 'string', 'in:pi,manager,researcher,collaborator'],
         ]);
         $user->update($request->all());
         return redirect()->route('users.edit')->with('status', 'Profilo aggiornato con successo!');
