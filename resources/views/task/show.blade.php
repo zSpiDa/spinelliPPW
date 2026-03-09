@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <a href="{{ route('tasks.index') }}" class="btn btn-link p-0 mb-3 text-decoration-none">
-            ← Torna alla lista Tasks
+            ← Torna a Tasks
         </a>
 
         <div class="row g-4">
