@@ -37,6 +37,7 @@ class TaskController extends Controller
             'assignee_id' => 'nullable|exists:users,id',
             'project_id'  => 'nullable|exists:projects,id',
         ]);
+
         // Crea la Task
         Task::create($validated);
 
@@ -50,7 +51,14 @@ class TaskController extends Controller
             ->with('success', 'Task creata con successo!');
     }
 
-    // ... show, edit ...
+    public function show(Task $task)
+    {
+        $task->load(['user', 'project']);
+
+        return view('task.show', compact('task'));
+    }
+    // -------------------------------
+
     public function edit(Task $task)
     {
         $users = User::orderBy('name')->get();
@@ -66,8 +74,6 @@ class TaskController extends Controller
             'due_date'    => 'nullable|date',
             'status'      => 'required|in:open,in_progress,done',
             'priority'    => 'required|in:low,medium,high',
-
-            // --- CORRETTO QUI: Usiamo assignee_id ---
             'assignee_id' => 'nullable|exists:users,id',
             'project_id'  => 'nullable|exists:projects,id',
         ]);
