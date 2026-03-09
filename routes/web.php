@@ -88,7 +88,7 @@ Route::middleware(['auth', 'role:pi,manager'])->group(function () {
 
 
 //Rotta per il gruppo di ricerca con middleware
-Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
+Route::middleware(['auth', 'role:pi,manager'])->group(function () {
     Route::get('/groups', [App\Http\Controllers\GroupController::class, 'edit'])->name('groups.edit');
     Route::post('/groups/update', [App\Http\Controllers\GroupController::class, 'update'])->name('groups.update');
     Route::post('/groups/add-member', [App\Http\Controllers\GroupController::class, 'addMember'])->name('groups.addMember');
