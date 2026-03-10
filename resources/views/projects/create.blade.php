@@ -22,11 +22,12 @@
             <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
         </div>
         <div class="mb-3">
+            <!-- select con freccettina per selezionare lo stato del progetto -->
             <h5 for="status" class="form-label">Stato</h5>
-            <select class="form-control" id="status" name="status">
-                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Planned</option>
-                <option value="ongoing" {{ old('status') == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
-                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Completed</option>
+            <select class="form-select" id="status" name="status">
+                <option value="planned" {{ old('status') == 'active' ? 'selected' : '' }}>Pianificato</option>
+                <option value="ongoing" {{ old('status') == 'ongoing' ? 'selected' : '' }}>In corso</option>
+                <option value="completed" {{ old('status') == 'completed' ? 'selected ' : '' }}>Completato</option>
             </select>
         </div>
         <div class="mb-3">
