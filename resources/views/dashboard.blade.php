@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        {{-- 2. Milestone (Destra) --}}
+        {{-- 2. Milestone (Ora è a Destra, scambiata con Task) --}}
         <div class="col-12 col-md-6">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-header bg-white fw-semibold">Milestone dei tuoi Progetti</div>
@@ -98,7 +98,7 @@
             </div>
         </div>
 
-        {{-- 3. Task personali (In basso a sinistra) --}}
+        {{-- 3. Task personali (Ora è in basso a sinistra) --}}
         <div class="col-12 col-md-6">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-header bg-white fw-semibold">Task personali</div>
@@ -106,21 +106,8 @@
                     @forelse($myTasks as $task)
                         <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                             <div>
-                                <a href="{{ route('tasks.show', $task) }}" class="fw-bold text-primary text-decoration-none">
-                                    {{ str_replace('Task: ', '', $task->title) }}
-                                </a>
-
-                                <div class="small mt-1">
-                                    @if($task->milestone)
-                                        <span class="fw-bold text-muted">Milestone:</span>
-                                        <span class="text-muted">{{ str_replace('Milestone: ', '', $task->milestone->title) }}</span>
-                                    @elseif($task->project)
-                                        <span class="fw-bold text-muted">Progetto:</span>
-                                        <span class="text-muted">{{ $task->project->title }}</span>
-                                    @else
-                                        <span class="text-muted fst-italic">-- Nessun collegamento --</span>
-                                    @endif
-                                </div>
+                                <div class="fw-semibold">{{ str_replace('Task: ', '', $task->title) }}</div>
+                                <small class="text-muted">{{ $task->project?->title ?? 'Nessun Progetto' }}</small>
                             </div>
                             <div class="text-end">
                                 {{-- Badge Status --}}
@@ -152,7 +139,7 @@
                         </div>
                     @empty
                         <div class="p-3 text-muted text-center">
-                            Non hai task assegnate al momento
+                            Non hai task assegnate al momento.
                         </div>
                     @endforelse
                 </div>
