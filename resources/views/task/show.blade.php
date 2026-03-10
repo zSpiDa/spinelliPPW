@@ -127,10 +127,6 @@
                                             <span class="text-muted fw-bold">Milestone:</span>
                                             <span class="fw-bold text-primary">{{ str_replace('Milestone: ', '', $task->milestone->title) }}</span>
                                         </div>
-                                        <div>
-                                            <span class="text-muted fw-bold">Progetto:</span>
-                                            <span class="text-muted">{{ $task->project->title }}</span>
-                                        </div>
                                     @elseif($task->project)
                                         <div>
                                             <span class="text-muted fw-bold">Progetto:</span>
