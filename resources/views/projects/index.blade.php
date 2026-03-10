@@ -4,9 +4,8 @@
     <h2 class="h5 mb-3">Progetti di Ricerca</h2>
 
 
-    <a href="{{ route('projects.create') }}"
-       class="btn btn-sm btn-success mb-3">
-        ➕ Nuovo progetto
+    <a href="{{ route('projects.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm mb-4">
+        + Nuovo progetto
     </a>
 
 

@@ -9,6 +9,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('assignee_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('milestone_id')->nullable()->constrained('milestones')->nullOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
             $table->date('due_date')->nullable();
