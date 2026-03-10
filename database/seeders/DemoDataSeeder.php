@@ -53,10 +53,34 @@ class DemoDataSeeder extends Seeder
             // Milestone
             Milestone::factory()->count(3)->create(['project_id' => $project->id]);
 
-            // Task
+            // Creazione Task per ogni progetto
             Task::factory()->count(6)->make()->each(function($t) use ($project, $users) {
+
+                // 1. Assegniamo SEMPRE la task al progetto e a un utente
                 $t->project_id  = $project->id;
                 $t->assignee_id = $users->random()->id;
+
+                // Recuperiamo le milestone di QUESTO specifico progetto
+                $projectMilestones = $project->milestones;
+
+                // 2. Il progetto ha delle milestone?
+                if ($projectMilestones->isNotEmpty()) {
+
+                    // Decidiamo a caso (50% di probabilità)
+                    if (fake()->boolean()) {
+                        // Assegnata a una MILESTONE del progetto
+                        $t->milestone_id = $projectMilestones->random()->id;
+                    } else {
+                        // Assegnata DIRETTAMENTE al progetto (nessuna milestone)
+                        $t->milestone_id = null;
+                    }
+
+                } else {
+                    // Se il progetto non ha milestone, assegniamo direttamente al progetto
+                    $t->milestone_id = null;
+                }
+
+                // Salviamo la task nel database
                 $t->save();
             });
 

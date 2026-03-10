@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\Milestone; // <-- Aggiunto per poter cercare le milestone
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -19,31 +20,51 @@ class TaskController extends Controller
     public function create()
     {
         $users = User::orderBy('name')->get();
-        $projects = Project::orderBy('title')->get();
+        // IMPORTANTE: Carichiamo i progetti INSIEME alle milestone
+        $projects = Project::with('milestones')->orderBy('title')->get();
         return view('task.create', compact('users', 'projects'));
     }
 
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date'    => 'nullable|date',
             'status'      => 'required|in:open,in_progress,done',
             'priority'    => 'required|in:low,medium,high',
-
-            // --- CORRETTO QUI: Usiamo assignee_id ---
             'assignee_id' => 'nullable|exists:users,id',
-            'project_id'  => 'nullable|exists:projects,id',
+            // Valideremo il nuovo campo 'target' che ci arriva dal form
+            'target'      => 'nullable|string',
         ]);
+
+        // Smistiamo il valore di "target" in project_id e milestone_id
+        if ($request->filled('target')) {
+            if (str_starts_with($request->target, 'milestone_')) {
+                $milestoneId = str_replace('milestone_', '', $request->target);
+                $milestone = Milestone::find($milestoneId);
+
+                $validated['project_id'] = $milestone->project_id;
+                $validated['milestone_id'] = $milestone->id;
+
+            } elseif (str_starts_with($request->target, 'project_')) {
+                $validated['project_id'] = str_replace('project_', '', $request->target);
+                $validated['milestone_id'] = null;
+            }
+        } else {
+            $validated['project_id'] = null;
+            $validated['milestone_id'] = null;
+        }
+
+        // Rimuoviamo 'target' perché non è una colonna del DB
+        unset($validated['target']);
 
         // Crea la Task
         Task::create($validated);
 
         // Redirect intelligente
-        if ($request->filled('project_id')) {
-            return redirect()->route('projects.edit', $request->project_id)
+        if (!empty($validated['project_id'])) {
+            return redirect()->route('projects.edit', $validated['project_id'])
                 ->with('success', 'Task creata e aggiunta al progetto!');
         }
 
@@ -53,16 +74,15 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
-        $task->load(['user', 'project']);
-
+        $task->load(['user', 'project', 'milestone']); // Carichiamo anche milestone se serve nella view
         return view('task.show', compact('task'));
     }
-    // -------------------------------
 
     public function edit(Task $task)
     {
         $users = User::orderBy('name')->get();
-        $projects = Project::orderBy('title')->get();
+        // IMPORTANTE: Carichiamo i progetti INSIEME alle milestone
+        $projects = Project::with('milestones')->orderBy('title')->get();
         return view('task.edit', compact('task', 'users', 'projects'));
     }
 
@@ -75,8 +95,30 @@ class TaskController extends Controller
             'status'      => 'required|in:open,in_progress,done',
             'priority'    => 'required|in:low,medium,high',
             'assignee_id' => 'nullable|exists:users,id',
-            'project_id'  => 'nullable|exists:projects,id',
+            // Valideremo il nuovo campo 'target' che ci arriva dal form
+            'target'      => 'nullable|string',
         ]);
+
+        // Smistiamo il valore di "target" in project_id e milestone_id
+        if ($request->filled('target')) {
+            if (str_starts_with($request->target, 'milestone_')) {
+                $milestoneId = str_replace('milestone_', '', $request->target);
+                $milestone = Milestone::find($milestoneId);
+
+                $validated['project_id'] = $milestone->project_id;
+                $validated['milestone_id'] = $milestone->id;
+
+            } elseif (str_starts_with($request->target, 'project_')) {
+                $validated['project_id'] = str_replace('project_', '', $request->target);
+                $validated['milestone_id'] = null;
+            }
+        } else {
+            $validated['project_id'] = null;
+            $validated['milestone_id'] = null;
+        }
+
+        // Rimuoviamo 'target' dall'array
+        unset($validated['target']);
 
         $task->update($validated);
 
