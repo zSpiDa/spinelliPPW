@@ -46,15 +46,15 @@
                                     @endphp
 
                                     @foreach($projects as $project)
-                                        <optgroup label="📁 Progetto: {{ $project->title }}">
+                                        <optgroup label="Progetto: {{ $project->title }}">
 
                                             <option value="project_{{ $project->id }}" {{ $currentValue == 'project_'.$project->id ? 'selected' : '' }}>
-                                                🎯 Assegna a tutto il Progetto (Nessuna Milestone)
+                                                --> Assegna solo al Progetto
                                             </option>
 
                                             @foreach($project->milestones as $m)
                                                 <option value="milestone_{{ $m->id }}" {{ $currentValue == 'milestone_'.$m->id ? 'selected' : '' }}>
-                                                    &nbsp;&nbsp;&nbsp;↳ 📌 Milestone: {{ $m->title }}
+                                                    &nbsp;&nbsp;&nbsp;↳ Milestone: {{ $m->title }}
                                                 </option>
                                             @endforeach
 
