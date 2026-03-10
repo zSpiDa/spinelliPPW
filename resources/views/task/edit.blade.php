@@ -35,6 +35,34 @@
                                 @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
+                            <div class="mb-3">
+                                <label for="target" class="form-label fw-bold">Progetto / Milestone</label>
+                                <select name="target" id="target" class="form-select @error('target') is-invalid @enderror">
+                                    <option value="">-- Nessun collegamento --</option>
+
+                                    @php
+                                        // Calcoliamo cosa deve essere selezionato di default
+                                        $currentValue = old('target', $task->milestone_id ? 'milestone_'.$task->milestone_id : ($task->project_id ? 'project_'.$task->project_id : ''));
+                                    @endphp
+
+                                    @foreach($projects as $project)
+                                        <optgroup label="📁 Progetto: {{ $project->title }}">
+
+                                            <option value="project_{{ $project->id }}" {{ $currentValue == 'project_'.$project->id ? 'selected' : '' }}>
+                                                🎯 Assegna a tutto il Progetto (Nessuna Milestone)
+                                            </option>
+
+                                            @foreach($project->milestones as $m)
+                                                <option value="milestone_{{ $m->id }}" {{ $currentValue == 'milestone_'.$m->id ? 'selected' : '' }}>
+                                                    &nbsp;&nbsp;&nbsp;↳ 📌 Milestone: {{ $m->title }}
+                                                </option>
+                                            @endforeach
+
+                                        </optgroup>
+                                    @endforeach
+                                </select>
+                                @error('target') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="due_date" class="form-label fw-bold">Scadenza</label>
@@ -85,8 +113,8 @@
                             <hr>
 
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Annulla</a>
-                                <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+                                <a href="{{ route('tasks.index') }}" class="btn btn-secondary fw-bold">Annulla</a>
+                                <button type="submit" class="btn btn-primary fw-bold">Salva Modifiche</button>
                             </div>
                         </form>
                     </div>

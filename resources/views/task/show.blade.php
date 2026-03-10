@@ -120,14 +120,26 @@
                             </li>
 
                             <li class="list-group-item py-3">
-                                <div class="text-muted fw-bold small mb-1">Collegato al Progetto</div>
+                                <div class="text-muted fw-bold small mb-2">Collegato a</div>
                                 <div>
-                                    @if($task->project)
-                                        <a href="{{ route('projects.show', $task->project) }}" class="text-decoration-none fw-bold">
-                                            {{ $task->project->title }}
-                                        </a>
+                                    @if($task->milestone)
+                                        <div class="mb-1">
+                                            <span class="text-muted fw-bold">Milestone:</span>
+                                            <span class="fw-bold text-primary">{{ str_replace('Milestone: ', '', $task->milestone->title) }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-muted fw-bold">Progetto:</span>
+                                            <span class="text-muted">{{ $task->project->title }}</span>
+                                        </div>
+                                    @elseif($task->project)
+                                        <div>
+                                            <span class="text-muted fw-bold">Progetto:</span>
+                                            <a href="{{ route('projects.show', $task->project) }}" class="text-decoration-none fw-bold">
+                                                {{ $task->project->title }}
+                                            </a>
+                                        </div>
                                     @else
-                                        <span class="text-muted fst-italic">-- Nessun progetto --</span>
+                                        <span class="text-muted fst-italic">-- Nessun collegamento --</span>
                                     @endif
                                 </div>
                             </li>
