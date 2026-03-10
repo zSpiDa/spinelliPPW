@@ -6,6 +6,7 @@ use App\Models\{Publication, Project, Author, Attachment, User};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
 
 class PublicationController extends Controller
 {
@@ -108,7 +109,7 @@ class PublicationController extends Controller
             $publicationData = Arr::except($validated, ['authors', 'projects', 'materials', 'main_pdf']);
 
             // Creiamo la riga nella tabella publications
-            $publication = Publication::create($publicationData);
+            $publication = Publication::where('id', $publication->id)->update($publicationData);
 
             // Salvataggio relazioni (Progetti)
             if (!empty($validated['projects'])) {
@@ -117,6 +118,19 @@ class PublicationController extends Controller
 
             // Salvataggio Autori (usiamo il metodo helper dedicato)
             $this->syncAuthors($publication, $request);
+
+            //Workflow dove non bisogna tornare indietro di stato (es. da published a submitted)
+            if (isset($validated['status']) && $validated['status'] !== $publication->status) {
+                $allowedTransitions = [
+                    'drafting' => ['submitted'],
+                    'submitted' => ['accepted', 'drafting'],
+                    'accepted' => ['published', 'submitted'],
+                    'published' => ['accepted'],
+                ];
+                if (!in_array($validated['status'], $allowedTransitions[$publication->status] ?? [])) {
+                    throw ValidationException::withMessages(['status' => 'Transizione di stato non consentita.']);
+                }
+            }
 
             // Upload PDF principale
             if ($request->hasFile('main_pdf')) {

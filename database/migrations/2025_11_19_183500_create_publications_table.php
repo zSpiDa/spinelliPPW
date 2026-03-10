@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('status')->default('pending');
             $table->date('target_deadline')->nullable();
             $table->timestamps();
+            $table->string('author')->nullable(); // Campo per memorizzare l'autore principale o una rappresentazione testuale degli autori
         });
     }
     public function down(): void { Schema::dropIfExists('publications'); }

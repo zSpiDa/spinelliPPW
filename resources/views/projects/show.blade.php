@@ -42,6 +42,25 @@
             </div>
         </div>
     </div>
+    <!-- Sezione stato di avanzamento con progress bar dopo il completamento della milestone -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-white fw-bold">Stato di Avanzamento</div>
+        <div class="card-body">
+            @php
+                $totalTasks = $project->milestones->count();
+                $completedTasks = $project->milestones->where('status', 'completed')->count();
+                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+            @endphp
+            <div class="mb-2">
+                <strong>{{ $progress }}%</strong> completato ({{ $completedTasks }}/{{ $totalTasks }} milestone)
+            </div>
+            <div class="progress" style="height: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: {{ $progress }}%;" aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ $progress }}%
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row g-4 mb-4">
         <div class="col-12 col-lg-6">

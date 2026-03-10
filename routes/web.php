@@ -37,10 +37,12 @@ Route::middleware(['auth', 'role:pi,manager'])->group(function () {
 
     // Altre rotte protette da ruolo
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-
-    Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.addMember');
-    Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
-    Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])->name('projects.sync');
+    // Rotte per gestire i membri del progetto
+    Route::middleware(['auth', 'role:pi,manager'])->group(function () {
+        Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.addMember');
+        Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
+        Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])->name('projects.sync');
+    });
 });
 
 // ----------------------------------------------------------------------
@@ -75,7 +77,7 @@ Route::get('/milestones/{milestone}/edit', [App\Http\Controllers\MilestoneContro
 // Rotta per ELIMINARE una milestone
 Route::delete('/milestones/{milestone}', [MilestoneController::class, 'delete'])
     ->middleware(['auth', 'role:pi,manager'])
-    ->name('milestones.delete');
+    ->name('milestones.destroy');
 
 //Rotta middleware per evitare che researcher modifichi progetto
 Route::middleware(['auth', 'role:pi,manager'])->group(function () {
@@ -88,7 +90,7 @@ Route::middleware(['auth', 'role:pi,manager'])->group(function () {
 
 
 //Rotta per il gruppo di ricerca con middleware
-Route::middleware(['auth', 'role:admin,pi,manager'])->group(function () {
+Route::middleware(['auth', 'role:pi,manager'])->group(function () {
     Route::get('/groups', [App\Http\Controllers\GroupController::class, 'edit'])->name('groups.edit');
     Route::post('/groups/update', [App\Http\Controllers\GroupController::class, 'update'])->name('groups.update');
     Route::post('/groups/add-member', [App\Http\Controllers\GroupController::class, 'addMember'])->name('groups.addMember');
@@ -110,13 +112,6 @@ Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.upda
 
 //Rotta per ELIMINARE TASKS
 Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy')->middleware(['auth', 'role:pi,manager']);
-
-//Rotta per aggiungere o rimuovere un membro al progetto (collegato al progetto)
-Route::middleware(['auth', 'role:pi,manager'])->group(function () {
-    Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.addMember');
-    Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
-    Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])->name('projects.sync');
-});
 
 
 require __DIR__.'/auth.php';

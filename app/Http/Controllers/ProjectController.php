@@ -104,6 +104,7 @@ class ProjectController extends Controller
         unset($validated['tasks']);
         // 1. Crea il Progetto
         $project = Project::create($validated);
+        $project->users()->attach(auth()->id(), ['role' => auth()->user()->role]); // Aggiungiamo automaticamente il creatore come membro del progetto con il suo ruolo
 
         // 2. Gestione File Allegato
         if ($request->hasFile('file')) {
