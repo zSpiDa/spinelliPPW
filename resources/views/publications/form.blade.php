@@ -18,7 +18,7 @@
 
     {{-- 1. TITOLO --}}
     <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-700">Titolo</label>
+        <label class="block text-sm font-medium text-gray-700">Titolo: </label>
         <input type="text" name="title"
                value="{{ old('title', $publication->title ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2" required>
@@ -26,7 +26,7 @@
 
     {{-- 2. TIPO --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Tipo (es. Journal, Conference)</label>
+        <label class="block text-sm font-medium text-gray-700">Tipo: </label>
         <input type="text" name="type"
                value="{{ old('type', $publication->type ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -34,7 +34,7 @@
 
     {{-- 3. VENUE --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Venue (Nome conferenza/rivista)</label>
+        <label class="block text-sm font-medium text-gray-700">Luogo: </label>
         <input type="text" name="venue"
                value="{{ old('venue', $publication->venue ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -42,7 +42,7 @@
 
     {{-- 4. STATO --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Stato</label>
+        <label class="block text-sm font-medium text-gray-700">Stato:</label>
         <select name="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             @foreach($statuses as $status)
                 <option value="{{ $status }}"
@@ -55,7 +55,7 @@
 
     {{-- 5. DEADLINE --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Target Deadline</label>
+        <label class="block text-sm font-medium text-gray-700">Target Deadline: </label>
         <input type="date" name="target_deadline"
                value="{{ old('target_deadline', isset($publication->target_deadline) ? $publication->target_deadline->format('Y-m-d') : '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -63,7 +63,7 @@
 
     {{-- 6. DOI --}}
     <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-700">DOI (Link o codice)</label>
+        <label class="block text-sm font-medium text-gray-700">DOI (Link o codice): </label>
         <input type="text" name="doi"
                value="{{ old('doi', $publication->doi ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -71,7 +71,7 @@
 
     {{-- 7. PROGETTI COLLEGATI (Multi-select) --}}
     <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Progetti Collegati</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Progetti Collegati: </label>
 
         <select id="select-projects" name="projects[]" multiple autocomplete="off"
                 class="block w-full rounded-md border-gray-300 shadow-sm border p-2"
@@ -92,7 +92,7 @@
 
     {{-- 8. GESTIONE AUTORI (La parte complessa che abbiamo sistemato) --}}
     <div class="col-span-2 border-t pt-4 mt-4">
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Autori</h3>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Autori: </h3>
 
         <div id="authors-list">
             @php
@@ -123,10 +123,10 @@
                                 @endforeach
                             </select>
                         </div>
-
+<br>
                         {{-- Ordine --}}
                         <div class="w-20">
-                            <label class="text-xs text-gray-500">Ordine</label>
+                            <label class="text-xs text-gray-500">Ordine: </label>
                             <input type="number" name="authors[{{ $i }}][order]"
                                    value="{{ old("authors.$i.order", optional($existing->get($i))->order ?? ($i+1)) }}"
                                    class="block w-full border-gray-300 rounded-md shadow-sm border p-1">
@@ -140,7 +140,7 @@
                             @endphp
                             <input type="checkbox" name="authors[{{ $i }}][is_corresponding]" value="1" @checked($isCorr)
                             class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                            <span class="ml-2 text-sm text-gray-700">Corr.</span>
+                            <span class="ml-2 text-sm text-gray-700">Autore della pubblicazione</span>
                         </div>
 
                         {{-- Tasto Rimuovi --}}
@@ -202,7 +202,7 @@
             <div class="flex items-center mt-0 px-2">
                 <input type="hidden" name="authors[${index}][is_corresponding]" value="0">
                 <input type="checkbox" name="authors[${index}][is_corresponding]" value="1" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                <span class="ml-2 text-sm text-gray-700">Corr.</span>
+                <span class="ml-2 text-sm text-gray-700">Autore della pubblicazione</span>
             </div>
             <div>
                 <button type="button" class="text-red-600 hover:text-red-800" onclick="this.closest('.author-row').remove()">
