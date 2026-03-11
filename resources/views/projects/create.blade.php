@@ -117,44 +117,42 @@
                     select.value = '';
                 }
             </script>
-            <div class="mb-3 p-3 bg-light rounded border">
-                <h5 class="mb-3">Milestone</h5>
+            <div class="mb-3">
+                <h5>Milestone</h5>
                 <div id="milestones-container">
-                    {{-- Le milestone dinamiche appariranno qui --}}
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addMilestone()">
+                        + Aggiungi milestone
+                    </button>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-primary fw-bold mt-2" onclick="addMilestone()">
-                    + Aggiungi milestone
-                </button>
-            </div>
-
-            <script>
-                let milestoneIndex = 0;
-                function addMilestone() {
-                    const container = document.getElementById('milestones-container');
-                    const row = document.createElement('div');
-                    row.className = 'row g-2 mb-2 align-items-center bg-white p-2 border rounded shadow-sm';
-                    row.innerHTML = `
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" name="milestones[${milestoneIndex}][title]" placeholder="Titolo Milestone">
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control" name="milestones[${milestoneIndex}][due_date]">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" name="milestones[${milestoneIndex}][status]">
-                                <option value="active">Pianificato</option>
-                                <option value="ongoing">In corso</option>
-                                <option value="completed">Completato</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 text-end">
-                            <button type="button" class="btn btn-outline-danger btn-sm fw-bold w-100" onclick="this.closest('.row').remove()">Rimuovi</button>
-                        </div>
-                    `;
-                    container.appendChild(row);
-                    milestoneIndex++;
-                }
-            </script>
+                <script>
+                    let milestoneIndex = 0;
+                    function addMilestone() {
+                        const container = document.getElementById('milestones-container');
+                        const row = document.createElement('div');
+                        row.className = 'row g-2 mb-2';
+                        row.innerHTML = `
+                            <div class="mt-4 col">
+                                <input type="text" class="form-control" name="milestones[${milestoneIndex}][title]" placeholder="Titolo">
+                            </div>
+                            <div class="mt-4 col">
+                                <input type="date" class="form-control" name="milestones[${milestoneIndex}][due_date]" placeholder="Data scadenza">
+                            </div>
+                            <div class="mt-4 col">
+                                <select class="form-select" name="milestones[${milestoneIndex}][status]">
+                                    <option value="planned">Pianificato</option>
+                                    <option value="ongoing">In corso</option>
+                                    <option value="completed">Completato</option>
+                                </select>
+                            </div>
+                            <div class="mt-4 col-auto">
+                                <button type="button" class="btn btn-danger" onclick="this.closest('.row').remove()">X</button>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                        milestoneIndex++;
+                    }
+                </script>
+                <br>
 
             <div class="mb-3">
                 <h5 for="tags" class="form-label">Tags</h5>
@@ -166,7 +164,7 @@
                 <input type="file" class="form-control" id="file" name="file" accept=".pdf">
             </div>
 
-            <button type="submit" class="btn btn-success btn-lg w-100 mb-5 fw-bold shadow-sm">Crea progetto</button>
+            <button type="submit" class="btn btn-primary">Crea progetto</button>
         </form>
     </div>
 @endsection
