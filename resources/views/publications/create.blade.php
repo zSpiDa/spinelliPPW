@@ -38,8 +38,8 @@
         </div>
         <!-- deadline della pubblicazione -->
         <div class="mb-3">
-            <label for="deadline" class="form-label">Deadline della pubblicazione</label>
-            <input type="date" class="form-control" id="deadline" name="deadline" required>
+            <label for="target_deadline" class="form-label">Deadline della pubblicazione</label>
+            <input type="date" class="form-control" id="target_deadline" name="target_deadline" required>
         </div>
         <!-- progetto associato alla pubblicazione -->
         <div class="mb-3">

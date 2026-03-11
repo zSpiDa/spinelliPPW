@@ -104,12 +104,12 @@ class PublicationController extends Controller
         // Validiamo i dati usando il metodo helper privato sotto
         $validated = $this->validateData($request);
 
-        DB::transaction(function () use ($request, $validated) {
+        DB::transaction(function () use ($request, $validated, $publication) {
 
             $publicationData = Arr::except($validated, ['authors', 'projects', 'materials', 'main_pdf']);
 
-            // Creiamo la riga nella tabella publications
-            $publication = Publication::where('id', $publication->id)->update($publicationData);
+            // Aggiorniamo la pubblicazione esistente
+            $publication->update($publicationData);
 
             // Salvataggio relazioni (Progetti)
             if (!empty($validated['projects'])) {
