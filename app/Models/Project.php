@@ -12,9 +12,8 @@ class Project extends Model
 
     public function users()
     {
-        // pivot: project_user (project_id, user_id, role, effort)
-        return $this->belongsToMany(User::class) //molti a molti
-            ->withPivot(['role','effort'])
+        return $this->belongsToMany(User::class)
+            ->withPivot('role', 'effort')
             ->withTimestamps();
     }
 
