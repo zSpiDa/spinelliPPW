@@ -53,6 +53,12 @@ class SendDeadlines extends Command
             // Se c'è almeno 1 scadenza, invia l'email
             if ($totale > 0) {
                 $user->notify(new DeadlineReminder($totale));
+                // Stampiamo un messaggio nel terminale per capire a chi l'ha inviata
+                //$this->info('Email inviata con successo a: ' . $user->email);
+
+                // FERMIAMO TUTTO DOPO LA PRIMA EMAIL PER EVITARE IL BLOCCO DI MAILTRAP
+                //break;
+                sleep(10);
             }
         }
 
