@@ -64,20 +64,20 @@
                         const row = document.createElement('div');
                         row.className = 'row g-2 mb-2';
                         row.innerHTML = `
-                            <div class="col">
+                            <div class="mt-4 col">
                                 <input type="text" class="form-control" name="milestones[${milestoneIndex}][title]" placeholder="Titolo">
                             </div>
-                            <div class="col">
+                            <div class="mt-4 col">
                                 <input type="date" class="form-control" name="milestones[${milestoneIndex}][due_date]" placeholder="Data scadenza">
                             </div>
-                            <div class="col">
-                                <select class="form-control" name="milestones[${milestoneIndex}][status]">
-                                    <option value="planned">Planned</option>
-                                    <option value="ongoing">Ongoing</option>
-                                    <option value="completed">Completed</option>
+                            <div class="mt-4 col">
+                                <select class="form-select" name="milestones[${milestoneIndex}][status]">
+                                    <option value="planned">Pianificato</option>
+                                    <option value="ongoing">In corso</option>
+                                    <option value="completed">Completato</option>
                                 </select>
                             </div>
-                            <div class="col-auto">
+                            <div class="mt-4 col-auto">
                                 <button type="button" class="btn btn-danger" onclick="this.closest('.row').remove()">X</button>
                             </div>
                         `;
@@ -85,9 +85,10 @@
                         milestoneIndex++;
                     }
                 </script>
+                <br>
         <div class="mb-3">
-            <h5 for="tags" class="form-label">Tags (separati da virgola)</h5>
-            <input type="text" class="form-control" id="tags" name="tags" value="{{ old('tags') }}">
+            <h5 for="tags" class="form-label">Tags</h5>
+            <input type="text" placeholder="Inserisci i tag separati da virgola" class="form-control" id="tags" name="tags" value="{{ old('tags') }}">
         </div>
         <div class="mb-3">
             <h5 for="file" class="form-label">Allega file</h5>
