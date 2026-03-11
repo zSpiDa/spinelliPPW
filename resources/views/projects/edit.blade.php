@@ -1,4 +1,3 @@
-<!-- Modifica dei dettagli di un progetto -->
 @extends('layouts.app')
 @section('content')
     <a href="{{ route('projects.index') }}" class="btn btn-link p-0 mb-3">← Torna alla lista dei progetti</a>
@@ -10,6 +9,7 @@
         @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
+
         <form action="{{ route('projects.update', $project) }}" method="POST" class="mb-4" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -31,194 +31,243 @@
                 </select>
             </div>
             <div class="mb-3">
-            <!-- Modifica della milestone con possibilità di aggiungere nuove milestone con logica -->
-            <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5>Milestones</h5>
-                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addMilestone()">
-                        + Aggiungi Milestone
-                    </button>
-                </div>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5>Milestones</h5>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addMilestone()">
+                            + Aggiungi Milestone
+                        </button>
+                    </div>
 
-                <div id="milestones-container">
-                    {{-- Loop per le milestone esistenti --}}
-                    @foreach($project->milestones as $index => $milestone)
-                        <div class="card mb-2 p-3 bg-light border milestone-row">
-                            {{-- ID fondamentale per l'aggiornamento. Se rimosso, il controller cancellerà la milestone --}}
-                            <input type="hidden" name="milestones[{{ $index }}][id]" value="{{ $milestone->id }}">
-                            
-                            <div class="row g-2">
-                                <div class="col-md-5">
-                                    <label class="form-label small text-muted">Titolo</label>
-                                    <input type="text" name="milestones[{{ $index }}][title]" class="form-control" value="{{ $milestone->title }}" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Scadenza</label>
-                                    <input type="date" name="milestones[{{ $index }}][due_date]" class="form-control" value="{{ $milestone->due_date ? \Carbon\Carbon::parse($milestone->due_date)->format('Y-m-d') : '' }}">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Stato</label>
-                                    <select name="milestones[{{ $index }}][status]" class="form-select">
-                                        <option value="planned" {{ $milestone->status == 'planned' ? 'selected' : '' }}>Planned</option>
-                                        <option value="ongoing" {{ $milestone->status == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
-                                        <option value="completed" {{ $milestone->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1 d-flex align-items-end">
-                                    <button type="button" class="btn btn-outline-danger w-100" onclick="removeMilestone(this)">
-                                        <i class="fas fa-trash"></i> X
-                                    </button>
+                    <div id="milestones-container">
+                        {{-- Loop per le milestone esistenti --}}
+                        @foreach($project->milestones as $index => $milestone)
+                            <div class="card mb-2 p-3 bg-light border milestone-row">
+                                {{-- ID fondamentale per l'aggiornamento. Se rimosso, il controller cancellerà la milestone --}}
+                                <input type="hidden" name="milestones[{{ $index }}][id]" value="{{ $milestone->id }}">
+
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <label class="form-label small text-muted">Titolo</label>
+                                        <input type="text" name="milestones[{{ $index }}][title]" class="form-control" value="{{ $milestone->title }}" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Scadenza</label>
+                                        <input type="date" name="milestones[{{ $index }}][due_date]" class="form-control" value="{{ $milestone->due_date ? \Carbon\Carbon::parse($milestone->due_date)->format('Y-m-d') : '' }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Stato</label>
+                                        <select name="milestones[{{ $index }}][status]" class="form-select">
+                                            <option value="planned" {{ $milestone->status == 'planned' ? 'selected' : '' }}>Planned</option>
+                                            <option value="ongoing" {{ $milestone->status == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
+                                            <option value="completed" {{ $milestone->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-end">
+                                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeMilestone(this)">
+                                            <i class="fas fa-trash"></i> X
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <script>
-                // Inizializziamo il contatore basandoci sul numero attuale di milestone per evitare conflitti di indici
-                let milestoneIndex = {{ $project->milestones->count() }};
-
-                function addMilestone() {
-                    const container = document.getElementById('milestones-container');
-                    const newIndex = milestoneIndex++; // Incrementa l'indice per la nuova riga
-                    
-                    const html = `
-                        <div class="card mb-2 p-3 bg-light border milestone-row">
-                            <div class="row g-2">
-                                <div class="col-md-5">
-                                    <label class="form-label small text-muted">Titolo</label>
-                                    <input type="text" name="milestones[new_${newIndex}][title]" class="form-control" placeholder="Nuova Milestone" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Scadenza</label>
-                                    <input type="date" name="milestones[new_${newIndex}][due_date]" class="form-control">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Stato</label>
-                                    <select name="milestones[new_${newIndex}][status]" class="form-select">
-                                        <option value="planned" selected>Planned</option>
-                                        <option value="ongoing">Ongoing</option>
-                                        <option value="completed">Completed</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1 d-flex align-items-end">
-                                    <button type="button" class="btn btn-outline-danger w-100" onclick="removeMilestone(this)">
-                                        X
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Aggiunge l'HTML al contenitore
-                    container.insertAdjacentHTML('beforeend', html);
-                }
-
-                function removeMilestone(button) {
-                    // Rimuove semplicemente l'elemento dal DOM.
-                    // Se l'elemento aveva un ID nascosto, non verrà inviato al server.
-                    // La logica "whereNotIn" del controller cancellerà automaticamente la milestone dal database.
-                    button.closest('.milestone-row').remove();
-                }
-            </script>
-            <!-- Upload allegati per documenti associati al progetto e rimozione dei file associati-->
-            <div class="mb-3">
-            <h5>Allegati</h5>
-                @if($project->attachments->count() > 0)
-                    <label class="form-label text-muted small">Allegati esistenti (Seleziona per rimuovere):</label>
-                    <ul class="list-group mb-3">
-                        @foreach($project->attachments as $attachment)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                {{-- Link per scaricare/vedere il file --}}
-                                <a href="{{ Storage::url($attachment->path) }}" target="_blank" class="text-decoration-none">
-                                    <i class="fas fa-file-pdf text-danger"></i> 
-                                    {{ $attachment->name ?? basename($attachment->path) }}
-                                </a>
-                                
-                                {{-- Checkbox per cancellare --}}
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="delete_attachments[]" value="{{ $attachment->id }}" id="del_att_{{ $attachment->id }}">
-                                    <label class="form-check-label text-danger" for="del_att_{{ $attachment->id }}">Rimuovi</label>
-                                </div>
-                            </li>
                         @endforeach
-                    </ul>
-                @else
-                    <p class="text-muted small">Nessun allegato presente.</p>
-                @endif
-                <div class="mb-2">
-                    <label for="file" class="form-label">Aggiungi nuovo allegato (PDF)</label>
-                    <input type="file" name="file" id="file" class="form-control" accept=".pdf">
-                </div>
-            </div>
-        </form>
-            <!-- Sezione per la creazione rapida di task associati al progetto -->
-             <div class="card mb-5">
-                    <div class="card-header fw-bold">
-                        Crea Nuova Task
                     </div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('tasks.store') }}">
-                            @csrf
-                            <input type="hidden" name="project_id" value="{{ $project->id }}">
+                </div>
 
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-bold">Titolo Task</label>
-                                    <input type="text" name="title" class="form-control" placeholder="Es: Analisi dati preliminari..." required>
-                                </div>
+                <script>
+                    // Inizializziamo il contatore basandoci sul numero attuale di milestone per evitare conflitti di indici
+                    let milestoneIndex = {{ $project->milestones->count() }};
 
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Assegna a</label>
-                                    <select name="assignee_id" class="form-select">
-                                        <option value="">-- Nessuno --</option>
-                                        @foreach($users as $u)
-                                            <option value="{{ $u->id }}">{{ $u->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                    function addMilestone() {
+                        const container = document.getElementById('milestones-container');
+                        const newIndex = milestoneIndex++; // Incrementa l'indice per la nuova riga
 
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Stato</label>
-                                    <select name="status" class="form-select">
-                                        <option value="open" selected>Da Fare</option>
-                                        <option value="in_progress">In Corso</option>
-                                        <option value="done">Completato</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Priorità</label>
-                                    <select name="priority" class="form-select">
-                                        <option value="low">Bassa</option>
-                                        <option value="medium" selected>Media</option>
-                                        <option value="high">Alta</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Scadenza</label>
-                                    <input type="date" name="due_date" class="form-control">
-                                </div>
-
-                                <div class="col-md-12">
-                                    <label class="form-label">Descrizione (opzionale)</label>
-                                    <textarea name="description" class="form-control" rows="2" placeholder="Dettagli aggiuntivi..."></textarea>
-                                </div>
-
-                                <div class="col-md-12 text-end mt-3">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check-lg"></i> Crea Task
-                                    </button>
+                        const html = `
+                            <div class="card mb-2 p-3 bg-light border milestone-row">
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <label class="form-label small text-muted">Titolo</label>
+                                        <input type="text" name="milestones[new_${newIndex}][title]" class="form-control" placeholder="Nuova Milestone" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Scadenza</label>
+                                        <input type="date" name="milestones[new_${newIndex}][due_date]" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small text-muted">Stato</label>
+                                        <select name="milestones[new_${newIndex}][status]" class="form-select">
+                                            <option value="planned" selected>Planned</option>
+                                            <option value="ongoing">Ongoing</option>
+                                            <option value="completed">Completed</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-end">
+                                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeMilestone(this)">
+                                            X
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </form>
+                        `;
+
+                        // Aggiunge l'HTML al contenitore
+                        container.insertAdjacentHTML('beforeend', html);
+                    }
+
+                    function removeMilestone(button) {
+                        button.closest('.milestone-row').remove();
+                    }
+                </script>
+
+                <div class="mb-3">
+                    <h5>Allegati</h5>
+                    @if($project->attachments->count() > 0)
+                        <label class="form-label text-muted small">Allegati esistenti (Seleziona per rimuovere):</label>
+                        <ul class="list-group mb-3">
+                            @foreach($project->attachments as $attachment)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ Storage::url($attachment->path) }}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-file-pdf text-danger"></i>
+                                        {{ $attachment->name ?? basename($attachment->path) }}
+                                    </a>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="delete_attachments[]" value="{{ $attachment->id }}" id="del_att_{{ $attachment->id }}">
+                                        <label class="form-check-label text-danger" for="del_att_{{ $attachment->id }}">Rimuovi</label>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-muted small">Nessun allegato presente.</p>
+                    @endif
+                    <div class="mb-2">
+                        <label for="file" class="form-label">Aggiungi nuovo allegato (PDF)</label>
+                        <input type="file" name="file" id="file" class="form-control" accept=".pdf">
                     </div>
                 </div>
-        </form>
+
+                <div class="mb-3">
+                    <h5>Membri del Progetto</h5>
+                    <div id="members-container" class="mb-3">
+                        @php
+                            $currentUsersIds = old('users') ? old('users') : $project->users->pluck('id')->toArray();
+                        @endphp
+
+                        @foreach($users as $user)
+                            @if(in_array($user->id, $currentUsersIds))
+                                <div class="d-flex justify-content-between align-items-center border p-2 mb-2 bg-white rounded member-row">
+                                    <span>{{ $user->name }} <small class="text-muted">({{ $user->role ?? 'Utente' }})</small></span>
+                                    <input type="hidden" name="users[]" value="{{ $user->id }}">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('.member-row').remove()">Rimuovi</button>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+
+                    <div class="input-group">
+                        <select id="user-select" class="form-select">
+                            <option value="">-- Seleziona utente da aggiungere --</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                        <button type="button" class="btn btn-primary" onclick="addMember()">Aggiungi Membro</button>
+                    </div>
+                </div>
+
+                <script>
+                    function addMember() {
+                        const select = document.getElementById('user-select');
+                        const userId = select.value;
+                        const userName = select.options[select.selectedIndex].text;
+
+                        if (!userId) return;
+
+                        if (document.querySelector(`input[name="users[]"][value="${userId}"]`)) {
+                            alert('Questo utente è già stato aggiunto!');
+                            return;
+                        }
+
+                        const container = document.getElementById('members-container');
+                        const memberRow = document.createElement('div');
+                        memberRow.className = 'd-flex justify-content-between align-items-center border p-2 mb-2 bg-white rounded member-row';
+                        memberRow.innerHTML = `
+                            <span>${userName}</span>
+                            <input type="hidden" name="users[]" value="${userId}">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('.member-row').remove()">Rimuovi</button>
+                        `;
+
+                        container.appendChild(memberRow);
+                        select.value = '';
+                    }
+                </script>
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-5">Salva Modifiche al Progetto</button>
+        </form> <div class="card mb-5">
+            <div class="card-header fw-bold">
+                Crea Nuova Task
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ route('tasks.store') }}">
+                    @csrf
+                    <input type="hidden" name="project_id" value="{{ $project->id }}">
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Titolo Task</label>
+                            <input type="text" name="title" class="form-control" placeholder="Es: Analisi dati preliminari..." required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Assegna a</label>
+                            <select name="assignee_id" class="form-select">
+                                <option value="">-- Nessuno --</option>
+                                @foreach($users as $u)
+                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Stato</label>
+                            <select name="status" class="form-select">
+                                <option value="open" selected>Da Fare</option>
+                                <option value="in_progress">In Corso</option>
+                                <option value="done">Completato</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Priorità</label>
+                            <select name="priority" class="form-select">
+                                <option value="low">Bassa</option>
+                                <option value="medium" selected>Media</option>
+                                <option value="high">Alta</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Scadenza</label>
+                            <input type="date" name="due_date" class="form-control">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Descrizione (opzionale)</label>
+                            <textarea name="description" class="form-control" rows="2" placeholder="Dettagli aggiuntivi..."></textarea>
+                        </div>
+
+                        <div class="col-md-12 text-end mt-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Crea Task
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="mb-3">
-            <!-- sezione per visualizzare le task associate al progetto con possibilità di modificare lo stato direttamente -->
             <h5>Task Associate al Progetto</h5>
             @if($project->tasks->count() > 0)
                 <ul class="list-group">
@@ -244,7 +293,6 @@
                                 </form>
                             </div>
                             <div>
-                                <!-- Rimuovi Task -->
                                 <form method="POST" action="{{ route('tasks.destroy', $task) }}" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questa task?');">
                                     @csrf
                                     @method('DELETE')
@@ -260,41 +308,7 @@
                 <p class="text-muted">Nessuna task associata a questo progetto.</p>
             @endif
         </div>
-        <div class="mb-3">
-            <!-- Sezione per vedere i membri associati con rimozione ed aggiunta di membri al progetto -->
-            <h5>Membri del Progetto</h5>
-            @if($project->users->count() > 0)
-                <ul class="list-group mb-3">
-                    @foreach($project->users as $user)
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ $user->name }}
-                            <form method="POST" action="{{ route('projects.removeMember', [$project, $user]) }}" class="d-inline" onsubmit="return confirm('Rimuovere {{ $user->name }} dal progetto?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Rimuovi</button>
-                            </form>
-                        </li>
-                    @endforeach
-                </ul>
-            @else
-                <p class="text-muted">Nessun membro associato a questo progetto.</p>
-            @endif
-            <!-- Form per aggiungere nuovi membri al progetto -->
-            <form method="POST" action="{{ route('projects.addMember', $project) }}">
-                @csrf
-                <div class="input-group">
-                    <select name="user_id" class="form-select">
-                        <option value="">-- Seleziona utente da aggiungere --</option>
-                        @foreach($users as $u)
-                            @if(!$project->users->contains($u))
-                                <option value="{{ $u->id }}">{{ $u->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                    <button type="submit" class="btn btn-primary">Aggiungi Membro</button>
-                </div>
-            </form>
-        </div>
+
         <div class="mb-3">
             <h5>Tag</h5>
             @if($project->tags->count() > 0)
@@ -322,6 +336,5 @@
                 <p class="text-muted">Nessuna pubblicazione associata a questo progetto.</p>
             @endif
         </div>
-        <button type="submit" class="btn btn-primary">Salva Modifiche</button>
     </div>
 @endsection
