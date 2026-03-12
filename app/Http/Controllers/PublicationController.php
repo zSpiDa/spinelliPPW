@@ -159,7 +159,7 @@ class PublicationController extends Controller
             }
         });
 
-        return redirect()->route('publications.index')->with('success', 'Pubblicazione creata con successo.');
+        return redirect()->route('publications.index')->with('success', 'Pubblicazione modificata con successo.');
     }
 
     /**

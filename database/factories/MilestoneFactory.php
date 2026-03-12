@@ -17,7 +17,7 @@ class MilestoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => 'Milestone: '.$this->faker->words(2, true),
+            'title' => $this->faker->words(2, true),
             'due_date' => $this->faker->date(),
             'status' => $this->faker->randomElement(['planned', 'in_progress', 'completed']),
         ];
