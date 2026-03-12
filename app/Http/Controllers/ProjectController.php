@@ -68,17 +68,17 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'status'      => 'required|string|max:100',
-            'file'        => 'nullable|mimes:pdf|max:20480',
             'code'        => 'required|string|max:255',
             'funder'      => 'required|string|max:255',
             'start_date'  => 'required|date',
             'end_date'    => 'nullable|date|after_or_equal:start_date',
             'description' => 'required|string',
-            'tags'         => 'required|string',
-            'milestones'   => 'required|array',
+            // Corretto: questi campi sono opzionali, non obbligatori
+            'tags'         => 'nullable|string',
+            'milestones'   => 'nullable|array',
             'publications' => 'nullable|string',
             'tasks'        => 'nullable|array',
-            'users'        => 'required|array',
+            'users'        => 'nullable|array',
             'users.*'      => 'exists:users,id',
         ]);
 
@@ -89,20 +89,16 @@ class ProjectController extends Controller
 
         $project = Project::create($validated);
 
-        // --- SALVATAGGIO MEMBRI CON RUOLI ---
+        // --- SALVATAGGIO MEMBRI ---
         $syncData = [];
 
-        $syncData[auth()->id()] = ['role' => auth()->user()->role ?? 'pi'];
-
         foreach ($usersInput as $userId) {
-            if ($userId != auth()->id()) {
-                $userRole = User::find($userId)->role ?? 'collaborator';
-                $syncData[$userId] = ['role' => $userRole];
-            }
+            $userRole = User::find($userId)->role ?? 'collaborator';
+            $syncData[$userId] = ['role' => $userRole];
         }
 
         $project->users()->sync($syncData);
-        // ------------------------------------
+        // --------------------------
 
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('projects', 'public');
@@ -175,16 +171,17 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'status'      => 'required|string|max:100',
-            'code'        => 'required|string|max:255',
-            'funder'      => 'required|string|max:255',
-            'start_date'  => 'required|date',
-            'end_date'    => 'required|date|after_or_equal:start_date',
-            'description' => 'required|string',
-            'tags'        => 'required|string',
-            'milestones'   => 'required|array',
-            'file'        => 'required|mimes:pdf|max:20480',
-            'tasks'        => 'required|array',
-            'users'        => 'required|array',
+            // Reso nullable il resto per evitare che blocchi il salvataggio se lasciati vuoti
+            'code'        => 'nullable|string|max:255',
+            'funder'      => 'nullable|string|max:255',
+            'start_date'  => 'nullable|date',
+            'end_date'    => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string',
+            'tags'        => 'nullable|string',
+            'milestones'   => 'nullable|array',
+            'file'        => 'nullable|mimes:pdf|max:20480',
+            'tasks'        => 'nullable|array',
+            'users'        => 'nullable|array',
             'users.*'      => 'exists:users,id',
         ]);
 
@@ -195,20 +192,17 @@ class ProjectController extends Controller
 
         $project->update($validated);
 
-        // --- AGGIORNAMENTO MEMBRI CON RUOLI ---
+        // --- AGGIORNAMENTO MEMBRI ---
         $syncData = [];
-        $syncData[auth()->id()] = ['role' => auth()->user()->role ?? 'pi'];
 
         if ($request->has('users')) {
             foreach ($usersInput as $userId) {
-                if ($userId != auth()->id()) {
-                    $userRole = User::find($userId)->role ?? 'collaborator';
-                    $syncData[$userId] = ['role' => $userRole];
-                }
+                $userRole = User::find($userId)->role ?? 'collaborator';
+                $syncData[$userId] = ['role' => $userRole];
             }
         }
         $project->users()->sync($syncData);
-        // ----------------------------------------
+        // ----------------------------
 
         if ($tagsInput !== null) {
             $tagNames = array_map('trim', explode(',', $tagsInput));

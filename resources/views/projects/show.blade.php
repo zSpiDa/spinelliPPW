@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $statusMap = [
+            'draft'     => 'Pianificato',
+            'planned'   => 'Pianificato',
+            'ongoing'   => 'In Corso',
+            'active'    => 'Completato',
+            'completed' => 'Completato',
+        ];
+    @endphp
+
     <a href="{{ route('projects.index') }}" class="btn btn-link p-0 mb-3 text-decoration-none">
         ← Torna ai progetti
     </a>
@@ -22,7 +32,7 @@
                     </div>
 
                     <div class="mb-2">
-                        Status: <span class="badge bg-primary">{{ $project->status ?? 'n/d' }}</span>
+                        Stato: <span class="badge bg-primary">{{ $project->status ? ($statusMap[$project->status] ?? ucfirst($project->status)) : 'n/d' }}</span>
                     </div>
 
                     @if($project->tags->isNotEmpty())
@@ -42,7 +52,6 @@
             </div>
         </div>
     </div>
-    <!-- Sezione stato di avanzamento con progress bar dopo il completamento della milestone -->
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-white fw-bold">Stato di Avanzamento</div>
         <div class="card-body">
@@ -75,7 +84,7 @@
                                 <div class="fw-bold">{{ $m->title }}</div>
                                 <div class="text-muted small">
                                     Scadenza: {{ $m->due_date ? \Carbon\Carbon::parse($m->due_date)->format('d/m/Y') : 'n/d' }}
-                                    <span class="ms-1 badge bg-light text-dark border">{{ $m->status }}</span>
+                                    <span class="ms-1 badge bg-light text-dark border">{{ $m->status ? ($statusMap[$m->status] ?? ucfirst($m->status)) : 'n/d' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +166,6 @@
         </div>
     </div>
 
-    <!-- Sezione Task con visualizzazione tabellare -->
     <div class="card mb-4 shadow-sm border-0">
         <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
             <span>Task del Progetto ({{ $project->tasks->count() }})</span>
