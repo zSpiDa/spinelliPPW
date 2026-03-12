@@ -69,7 +69,7 @@
         <button type="submit" class="btn btn-primary">Aggiorna Pubblicazione</button>
     </form>
 </div>
-
+<!-- Script per gestire dinamicamente l'aggiunta/rimozione degli autori -->
 <script>
 document.getElementById('add-author').addEventListener('click', function() {
     var container = document.getElementById('authors-container');

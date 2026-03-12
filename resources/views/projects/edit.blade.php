@@ -58,9 +58,9 @@
                                     <div class="col-md-3">
                                         <label class="form-label small text-muted">Stato</label>
                                         <select name="milestones[{{ $index }}][status]" class="form-select">
-                                            <option value="planned" {{ $milestone->status == 'planned' ? 'selected' : '' }}>Planned</option>
-                                            <option value="ongoing" {{ $milestone->status == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
-                                            <option value="completed" {{ $milestone->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                            <option value="planned" {{ $milestone->status == 'planned' ? 'selected' : '' }}>Pianificato</option>
+                                            <option value="ongoing" {{ $milestone->status == 'ongoing' ? 'selected' : '' }}>In Corso</option>
+                                            <option value="completed" {{ $milestone->status == 'completed' ? 'selected' : '' }}>Completato</option>
                                         </select>
                                     </div>
                                     <div class="col-md-1 d-flex align-items-end">
