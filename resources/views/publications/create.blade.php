@@ -1,33 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
+
 <!-- Creazione di una nuova pubblicazione con tutti i campi presi dal database -->
 <div class="container">
     <h1>Crea una nuova pubblicazione</h1>
     <form action="{{ route('publications.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="title" class="form-label">Titolo</label>
+            <label for="title" class="b form-label"><strong>Titolo</strong></label>
             <input type="text" class="form-control" id="title" name="title" required>
         </div>
         <!--tipo di pubblicazione senza form-->
         <div class="mb-3">
-            <label for="type" class="form-label">Tipo di pubblicazione</label>
+            <label for="type" class="form-label"><strong>Tipo di pubblicazione</strong></label>
             <input type="text" class="form-control" id="type" name="type" required>
         </div>
         <!--luogo della pubblicazione (venue) -->
         <div class="mb-3">
-            <label for="venue" class="form-label">Luogo di pubblicazione</label>
+            <label for="venue" class="form-label"><strong>Luogo di pubblicazione</strong></label>
             <input type="text" class="form-control" id="venue" name="venue" required>
         </div>
         <!-- DOI -->
         <div class="mb-3">
-            <label for="doi" class="form-label">DOI</label>
+            <label for="doi" class="form-label"><strong>DOI</strong></label>
             <input type="text" class="form-control" id="doi" name="doi" required>
         </div>
         <!-- stato della pubblicazione -->
         <div class="mb-3">
-            <label for="status" class="form-label">Stato</label>
+            <label for="status" class="form-label"><strong>Stato</strong></label>
             <select class="form-select" id="status" name="status" required>
                 <option value="">Seleziona uno stato</option>
                 <option value="drafting">Bozza</option>
@@ -38,12 +39,12 @@
         </div>
         <!-- deadline della pubblicazione -->
         <div class="mb-3">
-            <label for="target_deadline" class="form-label">Deadline della pubblicazione</label>
+            <label for="target_deadline" class="form-label"><strong>Deadline della pubblicazione</strong></label>
             <input type="date" class="form-control" id="target_deadline" name="target_deadline" required>
         </div>
         <!-- progetto associato alla pubblicazione -->
         <div class="mb-3">
-            <label for="project_id" class="form-label">Progetto associato</label>
+            <label for="project_id" class="form-label"><strong>Progetto associato</strong></label>
             <h2 class="text-muted small">Seleziona uno o più progetti associati a questa pubblicazione: </h2>
             <select class="form-select" id="projects" name="projects[]" required multiple>
                 @foreach($projects as $project)
@@ -71,6 +72,7 @@
         </div>
     </form>
 </div>
+
 
 <script>
 document.getElementById('add-author').addEventListener('click', function() {
