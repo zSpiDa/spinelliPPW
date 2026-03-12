@@ -18,7 +18,7 @@
 
     {{-- 1. TITOLO --}}
     <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-700">Titolo: </label>
+        <label class="block text-sm font-medium text-gray-700"><b>Titolo: </b></label>
         <input type="text" name="title"
                value="{{ old('title', $publication->title ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2" required>
@@ -26,7 +26,7 @@
 
     {{-- 2. TIPO --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Tipo: </label>
+        <label class="block text-sm font-medium text-gray-700"><b>Tipo: </b></label>
         <input type="text" name="type"
                value="{{ old('type', $publication->type ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -34,7 +34,7 @@
 
     {{-- 3. VENUE --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Luogo: </label>
+        <label class="block text-sm font-medium text-gray-700"><b>Luogo: </b></label>
         <input type="text" name="venue"
                value="{{ old('venue', $publication->venue ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -42,7 +42,7 @@
 
     {{-- 4. STATO --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Stato:</label>
+        <label class="block text-sm font-medium text-gray-700"><b>Stato:</b></label>
         <select name="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             @foreach($statuses as $status)
                 <option value="{{ $status }}"
@@ -55,7 +55,7 @@
 
     {{-- 5. DEADLINE --}}
     <div>
-        <label class="block text-sm font-medium text-gray-700">Target Deadline: </label>
+        <label class="block text-sm font-medium text-gray-700"><b>Target Deadline: </b></label>
         <input type="date" name="target_deadline"
                value="{{ old('target_deadline', isset($publication->target_deadline) ? $publication->target_deadline->format('Y-m-d') : '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -63,7 +63,7 @@
 
     {{-- 6. DOI --}}
     <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-700">DOI (Link o codice): </label>
+        <label class="block text-sm font-medium text-gray-700"><b>DOI (Link o codice): </b></label>
         <input type="text" name="doi"
                value="{{ old('doi', $publication->doi ?? '') }}"
                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
@@ -71,7 +71,7 @@
 
     {{-- 7. PROGETTI COLLEGATI (Multi-select) --}}
     <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Progetti Collegati: </label>
+        <label class="mt-1 block text-sm font-medium text-gray-700 mb-1"><b>Progetti Collegati</b> (Puoi selezionare più progetti cercandoli per nome):</label>
 
         <select id="select-projects" name="projects[]" multiple autocomplete="off"
                 class="block w-full rounded-md border-gray-300 shadow-sm border p-2"
@@ -87,7 +87,6 @@
                 </option>
             @endforeach
         </select>
-        <p class="text-xs text-gray-500 mt-1">Puoi selezionare più progetti cercandoli per nome.</p>
     </div>
 
     {{-- 8. GESTIONE AUTORI (La parte complessa che abbiamo sistemato) --}}
@@ -161,7 +160,7 @@
 
     {{-- 9. FILE UPLOAD --}}
     <div class="col-span-2 border-t pt-4 mt-4">
-        <label class="block text-sm font-medium text-gray-700">PDF Principale</label>
+        <label class="block text-sm font-medium text-gray-700"><b>PDF Principale: </b></label>
         <input type="file" name="main_pdf" accept=".pdf" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
         @if($edit && $publication->attachments()->where('type', 'main_pdf')->exists())
             <p class="text-xs text-green-600 mt-1">✓ File già caricato. Caricane uno nuovo per sostituirlo.</p>
@@ -169,7 +168,7 @@
     </div>
 
     <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-700">Materiali Aggiuntivi (Multiplo)</label>
+        <label class="block text-sm font-medium text-gray-700"><b>Materiali Aggiuntivi: </b></label>
         <input type="file" name="materials[]" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
     </div>
 
