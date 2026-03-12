@@ -41,7 +41,6 @@ Route::middleware(['auth', 'role:pi,manager'])->group(function () {
     Route::middleware(['auth', 'role:pi,manager'])->group(function () {
         Route::post('/projects/{project}/members', [ProjectController::class, 'addMember'])->name('projects.addMember');
         Route::delete('/projects/{project}/members/{user}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
-        Route::post('/projects/{project}/members/sync', [ProjectController::class, 'syncMembers'])->name('projects.sync');
     });
 });
 
