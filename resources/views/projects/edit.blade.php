@@ -253,7 +253,7 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label">Descrizione (opzionale)</label>
+                            <label class="form-label fw-bold">Descrizione (opzionale)</label>
                             <textarea name="description" class="form-control" rows="2" placeholder="Dettagli aggiuntivi..."></textarea>
                         </div>
 
@@ -309,17 +309,16 @@
             @endif
         </div>
 
-        <div class="mb-3">
-            <h5>Tag</h5>
-            @if($project->tags->count() > 0)
-                <div>
-                    @foreach($project->tags as $tag)
-                        <span class="badge bg-secondary">{{ $tag->name }}</span>
-                    @endforeach
-                </div>
-            @else
-                <p class="text-muted">Nessun tag associato a questo progetto.</p>
-            @endif
+        {{-- SEZIONE TAG AGGIORNATA --}}
+        <div class="mb-4 border-t pt-4">
+            <h5>Tag del Progetto</h5>
+            <div class="mb-3">
+                <label for="tags" class="form-label small text-muted">Inserisci i tag separati da virgola o premi invio</label>
+                {{-- Usiamo l'implode per mostrare i tag esistenti nel campo di testo --}}
+                <input type="text" name="tags" id="tags-input" class="form-control"
+                       value="{{ old('tags', $project->tags->pluck('name')->implode(',')) }}"
+                       placeholder="Aggiungi tag...">
+            </div>
         </div>
         <div class="mb-3">
             <h5>Pubblicazioni</h5>
@@ -337,4 +336,6 @@
             @endif
         </div>
     </div>
+        <button type="submit" class="btn btn-primary mb-5">Salva Modifiche al Progetto</button>
+    </form>
 @endsection
