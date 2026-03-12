@@ -30,9 +30,8 @@
         <div class="mb-3">
             <label for="status" class="form-label"><strong>Stato</strong></label>
             <select class="form-select" id="status" name="status" required>
-                <option value="">Seleziona uno stato</option>
                 <option value="drafting">Bozza</option>
-                <option value="submitted">Sottomesso</option>
+                <option value="submitted">Inviato</option>
                 <option value="accepted">Accettato</option>
                 <option value="published">Pubblicato</option>
             </select>

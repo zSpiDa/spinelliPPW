@@ -73,12 +73,12 @@ class ProjectController extends Controller
             'funder'      => 'required|string|max:255',
             'start_date'  => 'required|date',
             'end_date'    => 'nullable|date|after_or_equal:start_date',
-            'description' => 'required|string',
-            'tags'         => 'required|string',
+            'description' => 'nullable|string',
+            'tags'         => 'nullable|string',
             'milestones'   => 'required|array',
             'publications' => 'nullable|string',
             'tasks'        => 'nullable|array',
-            'users'        => 'required|array',
+            'users'        => 'nullable|array',
             'users.*'      => 'exists:users,id',
         ]);
 
@@ -92,13 +92,10 @@ class ProjectController extends Controller
         // --- SALVATAGGIO MEMBRI CON RUOLI ---
         $syncData = [];
 
-        $syncData[auth()->id()] = ['role' => auth()->user()->role ?? 'pi'];
-
         foreach ($usersInput as $userId) {
-            if ($userId != auth()->id()) {
-                $userRole = User::find($userId)->role ?? 'collaborator';
-                $syncData[$userId] = ['role' => $userRole];
-            }
+            //Assegna il ruolo in base al ruolo dell'utente (pi, manager, researcher, collaborator)
+            $userRole = User::find($userId)->role ?? 'collaborator';
+            $syncData[$userId] = ['role' => $userRole];
         }
 
         $project->users()->sync($syncData);
