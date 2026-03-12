@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-<!--form creazione progetto con campi per titolo, stato, codice, funder, date e descrizione -->
+<!--prova -->
 @section('content')
     <h1>Crea nuovo progetto</h1>
 
